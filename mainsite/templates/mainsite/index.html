@@ -3,24 +3,22 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="{% static 'mainsite/styles.css' %}">
-    <link rel="icon" href="{% static 'images/fox.png' %}" type="image/png">
+    <link rel="icon" href="{% static 'images/foxv1.png' %}" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Home{% endblock %}</title>
 </head>
-<body class="container">
+<body class="hero-page">
     <div class="center-block">
-        <header>
-            <div class="typewriter">
+        <div class="typewriter">
             <h1>hi im <span class="name">bernie</span> :)</h1>
-            </div>
-            <nav class="link-container">
-                <a href="/">home</a>
-                <a href="/about/">about</a>
-                <a href="/projects">projects</a>
-                <a href="/contact/">contact</a>
-            </nav>
-        </header>
+        </div>
+
+        <nav class="link-container">
+            <a href="/about/">about</a>
+            <a href="/projects/">projects</a>
+            <a href="/contact/">contact</a>
+        </nav>
     </div>
     <main>
         {% block content %}

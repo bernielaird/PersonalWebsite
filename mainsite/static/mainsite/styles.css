@@ -1,37 +1,44 @@
-@import url(https://db.onlinewebfonts.com/c/220eece2861e0a892f3bc87ad8029d0a?family=TSTAR+Mono+Round+W00+Regular); 
+@import url("https://db.onlinewebfonts.com/c/220eece2861e0a892f3bc87ad8029d0a?family=TSTAR+Mono+Round+W00+Regular");
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
 
 body {
     background-color: #f5f5f5;
     font-family: "TSTAR Mono Round W00 Regular", sans-serif;
 }
 
-.container {
+.link-container {
+    margin-top: 10px;
     display: flex;
-    justify-content: center;  /* horizontal */
-    align-items: center;      /* vertical */
-    height: 100vh;
-    text-align: center;
-    
+    gap: 15px;
+    justify-content: center;
+}
+
+.header-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-container {
+    flex: 1;
 }
 
 .center-block {
-    width: 320px;   /* adjust as needed */
+    width: 320px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.link-container {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-top: 10px;
-    display: flex;
-    gap: 15px;
-}
 
 .name {
-    color: #9b520f;  /* or whatever color you want */
+    color: #9b520f;
 }
 
 a:link,
@@ -41,30 +48,108 @@ a:active {
     color: inherit;
     text-decoration: none;
 }
+
 a:hover {
-    color: #a9682b
+    color: #a9682b;
 }
 
+a.name {
+    color: #8e4909;
+}
+
+a.name:hover {
+    color: #a9682b;
+}
 
 .typewriter h1 {
-    overflow: hidden; /* Ensures the content is not revealed until the animation */
-    border-right: .10em solid rgb(0, 0, 0); /* The typwriter cursor */
-    white-space: nowrap;  /*Keeps the content on a single line */
-    margin: 0 auto; /* Gives that scrolling effect as the typing happens */
-    letter-spacing: .10em; /* Adjust as needed */
-    animation: 
-        typing 3.0s steps(30, end),
-        blink-caret .5s step-end infinite;
+    overflow: hidden;
+    border-right: 0.10em solid rgb(0, 0, 0);
+    white-space: nowrap;
+    margin: 0 auto;
+    letter-spacing: 0.10em;
+    animation:
+        typing 3s steps(30, end),
+        blink-caret 0.5s step-end infinite;
 }
 
-/* The typing effect */
 @keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
+    from { width: 0; }
+    to { width: 100%; }
 }
 
-/* The typewriter cursor effect */
 @keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: rgb(0, 0, 0) }
+    from, to { border-color: transparent; }
+    50% { border-color: rgb(0, 0, 0); }
+}
+
+.bottom-bar {
+    width: 100%;
+    padding: 28px 56px;   /* bigger */
+    border-top: 1px solid #ddd;
+    background-color: #f5f5f5;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    box-sizing: border-box;
+
+    /* stronger but still clean shadow */
+    box-shadow:
+        0 -1px 0 rgba(0,0,0,0.15),
+        0 -6px 18px rgba(0,0,0,0.12),
+        0 -16px 40px rgba(0,0,0,0.10);
+}
+
+.bottom-left {
+    display: flex;
+    gap: 20px;
+    font-size: 22px;
+}
+
+.bottom-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.bottom-right input {
+    padding: 8px 12px;
+    border: 1px solid #999;
+    background: white;
+    font: inherit;
+}
+
+.bottom-right button {
+    padding: 8px 14px;
+    border: 1px solid #111;
+    background: #111;
+    color: white;
+    cursor: pointer;
+    font: inherit;
+}
+
+.hero-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.page-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-layout main {
+    flex: 1;
+}
+
+.page-layout header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
