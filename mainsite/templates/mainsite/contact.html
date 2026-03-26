@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{% static 'mainsite/styles.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Contact Me{% endblock %}</title>
+</head>
+<body class="container">
+    <header>
+        <h1>Contact Me</h1>
+        <nav class="link-container">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects">My Projects</a>
+            <a href="/contact/">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+
+</body>
+</html>
