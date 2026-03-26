@@ -1,6 +1,8 @@
+@import url(https://db.onlinewebfonts.com/c/220eece2861e0a892f3bc87ad8029d0a?family=TSTAR+Mono+Round+W00+Regular); 
+
 body {
     background-color: #f5f5f5;
-    font-family: Arial, sans-serif;
+    font-family: "TSTAR Mono Round W00 Regular", sans-serif;
 }
 
 .container {
@@ -9,13 +11,24 @@ body {
     align-items: center;      /* vertical */
     height: 100vh;
     text-align: center;
+    
+}
+
+.center-block {
+    width: 320px;   /* adjust as needed */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .link-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 10px;
     display: flex;
     gap: 15px;
 }
-
 a:link,
 a:visited,
 a:hover,
@@ -24,5 +37,28 @@ a:active {
     text-decoration: none;
 }
 a:hover {
-    color: #a9a9a9
+    color: #c17a38
+}
+
+.typewriter h1 {
+    overflow: hidden; /* Ensures the content is not revealed until the animation */
+    border-right: .10em solid rgb(0, 0, 0); /* The typwriter cursor */
+    white-space: nowrap;  /*Keeps the content on a single line */
+    margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+    letter-spacing: .10em; /* Adjust as needed */
+    animation: 
+        typing 3.0s steps(30, end),
+        blink-caret .5s step-end infinite;
+}
+
+/* The typing effect */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: rgb(0, 0, 0) }
 }

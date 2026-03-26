@@ -3,21 +3,25 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="{% static 'mainsite/styles.css' %}">
+    <link rel="icon" href="{% static 'mainsite/images/fox.png' %}" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Home{% endblock %}</title>
 </head>
 <body class="container">
-    <header>
-        <h1>Bernie Laird</h1>
-        <nav class="link-container">
-            <a href="/">Home</a>
-            <a href="/about/">About</a>
-            <a href="/projects">My Projects</a>
-            <a href="/contact/">Contact</a>
-        </nav>
-    </header>
-
+    <div class="center-block">
+        <header>
+            <div class="typewriter">
+                <h1>hi im bernie :)</h1>
+            </div>
+            <nav class="link-container">
+                <a href="/">home</a>
+                <a href="/about/">about</a>
+                <a href="/projects">projects</a>
+                <a href="/contact/">contact</a>
+            </nav>
+        </header>
+    </div>
     <main>
         {% block content %}
         {% endblock %}
