@@ -29,6 +29,11 @@ body {
     display: flex;
     gap: 15px;
 }
+
+.name {
+    color: #9b520f;  /* or whatever color you want */
+}
+
 a:link,
 a:visited,
 a:hover,
@@ -37,8 +42,9 @@ a:active {
     text-decoration: none;
 }
 a:hover {
-    color: #c17a38
+    color: #a9682b
 }
+
 
 .typewriter h1 {
     overflow: hidden; /* Ensures the content is not revealed until the animation */
