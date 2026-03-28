@@ -9,6 +9,10 @@ body {
     font-family: "TSTAR Mono Round W00 Regular", sans-serif;
 }
 
+main {
+    padding-bottom: 120px;
+}
+
 
 .link-container {
     margin-top: 10px;
@@ -38,7 +42,7 @@ body {
 
 
 .name {
-    color: #9b520f;
+    color: #e16f03;
 }
 
 a:link,
@@ -160,14 +164,14 @@ a.name:hover {
 }
 
 .title {
-    margin-top: 150px;
-    margin-left: 30%;
+    margin-top: 10%;
+    margin-left: 25%;
     text-align: left;
 }
 .paragraphs {
     font-size: 18px;
-    width: 40%;
-    margin-left: 30%;
+    width: 50%;
+    margin-left: 25%;
 }
 
 .underline {
@@ -183,4 +187,49 @@ a.name:hover {
 .contact-label {
     margin-bottom: 6px;
     font-weight: bold;
+}
+
+.projects-container {
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 40px;
+}
+
+.project-card {
+    margin-bottom: 40px;
+}
+
+.project-name {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.project-description {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.project-link {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: #8e4909;
+    text-decoration: none;
+}
+
+.project-link:hover {
+    color: #a9682b;
+}
+
+.tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    font-size: 14px;
+    padding: 4px 10px;
+    border: 1px solid #ddd;
 }
