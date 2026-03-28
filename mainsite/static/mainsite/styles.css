@@ -7,6 +7,12 @@ html, body {
 body {
     background-color: #f5f5f5;
     font-family: "TSTAR Mono Round W00 Regular", sans-serif;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+}
+
+body.fade-out {
+    opacity: 0;
 }
 
 .link-container {
