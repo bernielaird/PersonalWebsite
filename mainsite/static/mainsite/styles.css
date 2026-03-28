@@ -1,7 +1,6 @@
 @import url("https://db.onlinewebfonts.com/c/220eece2861e0a892f3bc87ad8029d0a?family=TSTAR+Mono+Round+W00+Regular");
 
 html, body {
-    height: 100%;
     margin: 0;
 }
 
@@ -152,4 +151,9 @@ a.name:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.title {
+    margin-top: 150px;
+    transform: translateX(-350%);
 }
