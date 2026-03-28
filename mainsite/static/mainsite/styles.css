@@ -149,11 +149,32 @@ a.name:hover {
 .page-layout header {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
     justify-content: center;
 }
 
 .title {
     margin-top: 150px;
-    transform: translateX(-350%);
+    margin-left: 30%;
+    text-align: left;
+}
+.paragraphs {
+    font-size: 18px;
+    width: 40%;
+    margin-left: 30%;
+}
+
+.underline {
+    text-decoration: none;
+    border-bottom: 2px solid orange;
+    padding-bottom: 2px;
+}
+
+.contact-item {
+    margin-bottom: 24px;
+}
+
+.contact-label {
+    margin-bottom: 6px;
+    font-weight: bold;
 }
