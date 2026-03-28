@@ -233,3 +233,15 @@ a.name:hover {
     padding: 4px 10px;
     border: 1px solid #ddd;
 }
+
+@media (max-width: 600px) {
+    .bottom-bar {
+        padding: 16px 20px;   /* smaller padding */
+    }
+
+    .bottom-left {
+        font-size: 16px;      /* smaller text */
+        gap: 12px;            /* tighter spacing */
+        flex-wrap: wrap;      /* prevents overflow */
+    }
+}
