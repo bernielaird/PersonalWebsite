@@ -1,4 +1,5 @@
 @import url("https://db.onlinewebfonts.com/c/220eece2861e0a892f3bc87ad8029d0a?family=TSTAR+Mono+Round+W00+Regular");
+@import url("colors.css");
 
 html, body {
     margin: 0;
@@ -42,7 +43,7 @@ main {
 
 
 .name {
-    color: #e16f03;
+    color: #b95900;
 }
 
 a:link,
