@@ -1,0 +1,49 @@
+:root {
+/** Base colors */
+--clr-dark-a0: #000000;
+--clr-light-a0: #ffffff;
+
+/** Theme primary colors */
+--clr-primary-a0: #cf6d1d;
+--clr-primary-a10: #d77d38;
+--clr-primary-a20: #df8d51;
+--clr-primary-a30: #e69d69;
+--clr-primary-a40: #ecad81;
+--clr-primary-a50: #f2bd99;
+
+/** Theme surface colors */
+--clr-surface-a0: #16161a;
+--clr-surface-a10: #2b2b2f;
+--clr-surface-a20: #424245;
+--clr-surface-a30: #5a5a5d;
+--clr-surface-a40: #737376;
+--clr-surface-a50: #8d8d90;
+
+/** Theme tonal surface colors */
+--clr-surface-tonal-a0: #271e1c;
+--clr-surface-tonal-a10: #3c3331;
+--clr-surface-tonal-a20: #514947;
+--clr-surface-tonal-a30: #68605f;
+--clr-surface-tonal-a40: #7f7977;
+--clr-surface-tonal-a50: #979291;
+
+/** Success colors */
+--clr-success-a0: #22946e;
+--clr-success-a10: #47d5a6;
+--clr-success-a20: #9ae8ce;
+
+/** Warning colors */
+--clr-warning-a0: #a87a2a;
+--clr-warning-a10: #d7ac61;
+--clr-warning-a20: #ecd7b2;
+
+/** Danger colors */
+--clr-danger-a0: #9c2121;
+--clr-danger-a10: #d94a4a;
+--clr-danger-a20: #eb9e9e;
+
+/** Info colors */
+--clr-info-a0: #21498a;
+--clr-info-a10: #4077d1;
+--clr-info-a20: #92b2e5;
+}
