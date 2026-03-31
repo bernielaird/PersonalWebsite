@@ -181,6 +181,10 @@ a.name:hover {
     padding-bottom: 2px;
 }
 
+.contact-item-top {
+    margin-top: 14px;
+    margin-bottom: 24px;
+}
 .contact-item {
     margin-bottom: 24px;
 }
