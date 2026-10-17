@@ -279,6 +279,14 @@ a.name:hover {
     font-weight: bold;
 }
 
+.paragraphs p { line-height: 1.6; }
+
+/* Section labels on the about page */
+.paragraphs > .contact-label {
+    margin-top: 30px;
+    margin-bottom: 0;
+}
+
 .projects-container {
     width: 50%;
     margin-left: 25%;
