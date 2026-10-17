@@ -39,6 +39,10 @@
         <a class="project-link" href="{% url 'vct:match' match.match_id %}">{{ match.team1 }} {{ match.team1_score }}&ndash;{{ match.team2_score }} {{ match.team2 }} &rarr; round by round</a>
         <span class="muted">{{ match.stage|default:"" }} &middot; {{ match.start_time|slice:":10" }}</span>
     </p>
+    <p class="legend">
+        <span class="team-swatch team1"></span> {{ match.team1 }}
+        <span class="team-swatch team2"></span> {{ match.team2 }}
+    </p>
     <h3>Whole match</h3>
     <div class="table-scroll">
     <table class="vct-table sortable">
@@ -48,7 +52,7 @@
         {% for r in s.totals %}
             <tr class="{% if r.team_id == match.team1_id %}team1{% else %}team2{% endif %}">
                 <td class="nowrap"><a href="{% url 'vct:player' r.player_id %}">{{ r.player }}</a>
-                    <span class="muted">{% if r.team_id == match.team1_id %}{{ match.team1_tag }}{% else %}{{ match.team2_tag }}{% endif %}</span></td>
+                    <span class="team-tag">{% if r.team_id == match.team1_id %}{{ match.team1_tag }}{% else %}{{ match.team2_tag }}{% endif %}</span></td>
                 <td class="muted">{{ r.agents|join:", " }}</td>
                 <td class="num">{{ r.maps }}</td>
                 <td class="num">{{ r.kills }}</td><td class="num">{{ r.deaths }}</td><td class="num">{{ r.assists }}</td>
@@ -71,9 +75,9 @@
             <th class="num">ACS</th><th class="num">ADR</th><th class="num">KAST</th><th class="num">Rating</th><th class="num">WPA</th></tr></thead>
         <tbody>
         {% for r in mp.rows %}
-            <tr>
+            <tr class="{% if r.team_id == match.team1_id %}team1{% else %}team2{% endif %}">
                 <td class="nowrap"><a href="{% url 'vct:player' r.player_id %}">{{ r.player }}</a>
-                    <span class="muted">{% if r.team_id == match.team1_id %}{{ match.team1_tag }}{% else %}{{ match.team2_tag }}{% endif %}</span></td>
+                    <span class="team-tag">{% if r.team_id == match.team1_id %}{{ match.team1_tag }}{% else %}{{ match.team2_tag }}{% endif %}</span></td>
                 <td class="muted">{{ r.agent|default:"" }}</td>
                 <td class="num">{{ r.kills }}</td><td class="num">{{ r.deaths }}</td><td class="num">{{ r.assists }}</td>
                 <td class="num">{{ r.first_kills }}</td><td class="num">{{ r.first_deaths }}</td>

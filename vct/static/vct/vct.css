@@ -119,6 +119,22 @@
 .year-group { margin: 10px 0; }
 .year-group summary { cursor: pointer; font-size: 18px; padding: 6px 0; }
 
+/* Match stats: each team gets a color (edge, tint, tag) so the two sides stand out */
+.vct-content { --team1: #cf6d1d; --team2: #4077d1; }
+:root[data-theme="dark"] .vct-content { --team1: #df8d51; --team2: #7ea3e0; }
+
+.vct-table tr.team1 td:first-child { box-shadow: inset 4px 0 0 var(--team1); padding-left: 12px; }
+.vct-table tr.team2 td:first-child { box-shadow: inset 4px 0 0 var(--team2); padding-left: 12px; }
+.vct-table tr.team1 { background: color-mix(in srgb, var(--team1) 8%, transparent); }
+.vct-table tr.team2 { background: color-mix(in srgb, var(--team2) 8%, transparent); }
+.vct-table tr.team1 .team-tag { color: var(--team1); font-weight: bold; }
+.vct-table tr.team2 .team-tag { color: var(--team2); font-weight: bold; }
+
+.team-swatch { display: inline-block; width: 12px; height: 12px; vertical-align: middle; margin: 0 4px 0 14px; }
+.team-swatch:first-child { margin-left: 0; }
+.team-swatch.team1 { background: var(--team1); }
+.team-swatch.team2 { background: var(--team2); }
+
 /* Round strip */
 .map-block { margin: 22px 0; }
 
