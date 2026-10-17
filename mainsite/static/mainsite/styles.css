@@ -11,12 +11,89 @@
     font-display: block;
 }
 
+/* Colors. Light by default; dark follows the system setting until the theme button is used
+   (theme.js stores the choice and sets data-theme on <html>). */
+:root {
+    color-scheme: light;
+    --bg: #f5f5f5;
+    --text: #111;
+    --text-soft: #444;
+    --muted: #666;
+    --faint: #888;
+    --border: #ddd;
+    --border-strong: #bbb;
+    --row-line: #e3e3e3;
+    --hover-bg: #ececec;
+    --accent: #8e4909;
+    --accent-name: #b95900;
+    --accent-hover: #a9682b;
+    --chart-line: #cf6d1d;
+    --chart-grid: #e6e6e6;
+    --loss: #5a5a5d;
+    --input-bg: #fff;
+    --input-border: #999;
+    --button-bg: #111;
+    --button-text: #fff;
+    --bar-shadow: 0 -1px 0 rgba(0,0,0,0.15), 0 -3px 18px rgba(0,0,0,0.12), 0 -6px 40px rgba(0,0,0,0.10);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --bg: #16161a;
+        --text: #e6e4e1;
+        --text-soft: #c4c1bd;
+        --muted: #9d9a97;
+        --faint: #85827f;
+        --border: #34343a;
+        --border-strong: #4a4a50;
+        --row-line: #2a2a30;
+        --hover-bg: #222228;
+        --accent: #e69d69;
+        --accent-name: #df8d51;
+        --accent-hover: #f2bd99;
+        --chart-line: #df8d51;
+        --chart-grid: #2c2c32;
+        --loss: #6a6a6e;
+        --input-bg: #222228;
+        --input-border: #4a4a50;
+        --button-bg: #e6e4e1;
+        --button-text: #16161a;
+        --bar-shadow: 0 -1px 0 rgba(0,0,0,0.6), 0 -3px 18px rgba(0,0,0,0.4);
+    }
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #16161a;
+    --text: #e6e4e1;
+    --text-soft: #c4c1bd;
+    --muted: #9d9a97;
+    --faint: #85827f;
+    --border: #34343a;
+    --border-strong: #4a4a50;
+    --row-line: #2a2a30;
+    --hover-bg: #222228;
+    --accent: #e69d69;
+    --accent-name: #df8d51;
+    --accent-hover: #f2bd99;
+    --chart-line: #df8d51;
+    --chart-grid: #2c2c32;
+    --loss: #6a6a6e;
+    --input-bg: #222228;
+    --input-border: #4a4a50;
+    --button-bg: #e6e4e1;
+    --button-text: #16161a;
+    --bar-shadow: 0 -1px 0 rgba(0,0,0,0.6), 0 -3px 18px rgba(0,0,0,0.4);
+}
+
 html, body {
     margin: 0;
 }
 
 body {
-    background-color: #f5f5f5;
+    background-color: var(--bg);
+    color: var(--text);
     font-family: "TSTAR Mono Round W00 Regular", sans-serif;
 }
 
@@ -53,7 +130,7 @@ main {
 
 
 .name {
-    color: #b95900;
+    color: var(--accent-name);
 }
 
 a:link,
@@ -65,20 +142,20 @@ a:active {
 }
 
 a:hover {
-    color: #a9682b;
+    color: var(--accent-hover);
 }
 
 a.name {
-    color: #8e4909;
+    color: var(--accent);
 }
 
 a.name:hover {
-    color: #a9682b;
+    color: var(--accent-hover);
 }
 
 .typewriter h1 {
     overflow: hidden;
-    border-right: 0.10em solid rgb(0, 0, 0);
+    border-right: 0.10em solid var(--text);
     white-space: nowrap;
     margin: 0 auto;
     letter-spacing: 0.10em;
@@ -94,7 +171,7 @@ a.name:hover {
 
 @keyframes blink-caret {
     from, to { border-color: transparent; }
-    50% { border-color: rgb(0, 0, 0); }
+    50% { border-color: var(--text); }
 }
 
 .bottom-bar {
@@ -104,8 +181,8 @@ a.name:hover {
     width: 100%;
 
     padding: 28px 56px;
-    border-top: 1px solid #ddd;
-    background-color: #f5f5f5;
+    border-top: 1px solid var(--border);
+    background-color: var(--bg);
 
     display: flex;
     justify-content: space-between;
@@ -113,10 +190,7 @@ a.name:hover {
 
     box-sizing: border-box;
 
-    box-shadow:
-        0 -1px 0 rgba(0,0,0,0.15),
-        0 -3px 18px rgba(0,0,0,0.12),
-        0 -6px 40px rgba(0,0,0,0.10);
+    box-shadow: var(--bar-shadow);
 
     z-index: 1000; /* keeps it above everything */
 }
@@ -135,16 +209,17 @@ a.name:hover {
 
 .bottom-right input {
     padding: 8px 12px;
-    border: 1px solid #999;
-    background: white;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--text);
     font: inherit;
 }
 
 .bottom-right button {
     padding: 8px 14px;
-    border: 1px solid #111;
-    background: #111;
-    color: white;
+    border: 1px solid var(--button-bg);
+    background: var(--button-bg);
+    color: var(--button-text);
     cursor: pointer;
     font: inherit;
 }
@@ -222,19 +297,19 @@ a.name:hover {
 
 .project-description {
     font-size: 16px;
-    color: #444;
+    color: var(--text-soft);
     margin-bottom: 10px;
 }
 
 .project-link {
     display: inline-block;
     margin-bottom: 12px;
-    color: #8e4909;
+    color: var(--accent);
     text-decoration: none;
 }
 
 .project-link:hover {
-    color: #a9682b;
+    color: var(--accent-hover);
 }
 
 .tags {
@@ -246,7 +321,7 @@ a.name:hover {
 .tag {
     font-size: 14px;
     padding: 4px 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
 }
 
 @media (max-width: 600px) {
@@ -259,4 +334,29 @@ a.name:hover {
         gap: 12px;            /* tighter spacing */
         flex-wrap: wrap;      /* prevents overflow */
     }
+}
+/* Dark mode button, top right on every page. The label names the mode it switches to. */
+.theme-toggle {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 1001;
+    padding: 6px 12px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.theme-toggle::after { content: "dark"; }
+:root[data-theme="dark"] .theme-toggle::after { content: "light"; }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme-toggle::after { content: "light"; }
 }

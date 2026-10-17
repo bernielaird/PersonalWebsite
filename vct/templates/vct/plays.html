@@ -40,7 +40,7 @@
     {% for p in rows %}
         <tr>
             <td class="num">{{ p.rank }}</td>
-            <td class="nowrap">{{ p.player }} <span class="muted">{{ p.team }}</span></td>
+            <td class="nowrap"><a href="{% url 'vct:player' p.player_id %}">{{ p.player }}</a> <span class="muted">{{ p.team }}</span></td>
             <td class="num up">{{ p.credit|signed:0 }}</td>
             {% if kind == "kill" %}
                 <td class="num nowrap">{{ p.prob_before|floatformat:0 }}&rarr;{{ p.prob_after|floatformat:0 }}</td>

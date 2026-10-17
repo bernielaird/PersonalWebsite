@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script src="{% static 'mainsite/theme.js' %}" defer></script>
     <link rel="preload" href="{% static 'fonts/tstar-mono-round.woff2' %}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{% static 'mainsite/styles.css' %}">
     <link rel="stylesheet" href="{% static 'vct/vct.css' %}">
@@ -11,6 +13,7 @@
     <title>{% block title %}VCT win probability{% endblock %}</title>
 </head>
 <body class="page-layout">
+    <button class="theme-toggle" type="button" aria-label="Switch between light and dark mode"></button>
     <header>
         <div class="title">
             <h1>{% block heading %}vct win probability{% endblock %}</h1>
@@ -22,7 +25,7 @@
             <nav class="vct-nav">
                 <a href="{% url 'vct:index' %}">overview</a>
                 <a href="{% url 'vct:plays' %}">best performances</a>
-                <a href="{% url 'vct:players' %}">players</a>
+                <a href="{% url 'vct:stats' %}">stats</a>
                 <a href="{{ github }}" target="_blank">github</a>
             </nav>
             {% block content %}{% endblock %}

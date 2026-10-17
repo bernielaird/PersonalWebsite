@@ -10,5 +10,7 @@ urlpatterns = [
     path("match/<int:match_id>/", views.match, name="match"),
     path("round/<int:game_id>/<int:round_num>/", views.round_view, name="round"),
     path("plays/", views.plays, name="plays"),
+    path("stats/", views.stats, name="stats"),
     path("players/", views.players, name="players"),
+    path("player/<int:player_id>/", views.player, name="player"),
 ]

@@ -3,6 +3,7 @@
 {% block content %}
 <p class="note"><a class="project-link" href="{% url 'vct:event' match.event_id %}">{{ match.event }}</a> &middot; {{ match.stage|default:"" }} &middot; {{ match.start_time|slice:":10" }}</p>
 <h2>{{ match.team1 }} {{ match.team1_score }}&ndash;{{ match.team2_score }} {{ match.team2 }}</h2>
+<p><a class="project-link" href="{% url 'vct:stats' %}?event={{ match.event_id }}&match={{ match.match_id }}">player stats for this match &rarr;</a></p>
 
 <p class="legend">
     <span class="sq w1"></span> {{ match.team1_tag|default:match.team1 }} won the round

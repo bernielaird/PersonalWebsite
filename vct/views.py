@@ -1,13 +1,14 @@
 from itertools import groupby
 
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse
 
 from . import data
 
 FEATURED_ROUND = (280042, 23)  # Americas Stage 2 grand final, map 5 (Haven), round 23
 GITHUB = "https://github.com/bernielaird/vctstats"
-MIN_ROUNDS = {"all": 2000, "y": 600, "e": 300}  # default leaderboard cut-off by scope type
+MIN_ROUNDS = {"all": 1000, "y": 300, "e": 0}  # default stats cut-off by scope type
 
 
 def _render(request, template, context):
@@ -34,8 +35,7 @@ def event(request, event_id):
     e = data.event(event_id)
     if not e:
         raise Http404("No such event")
-    return _render(request, "event.html", {"event": e, "matches": data.event_matches(event_id),
-                                           "has_wpa": bool(data.leaderboard(f"e{event_id}", 0)[:1])})
+    return _render(request, "event.html", {"event": e, "matches": data.event_matches(event_id)})
 
 
 def match(request, match_id):
@@ -69,19 +69,52 @@ def plays(request):
     })
 
 
-def players(request):
-    scopes = data.scopes()
-    events = [e | {"scope": f"e{e['event_id']}"} for e in data.events() if e["has_wpa"]]
-    names = dict(scopes) | {e["scope"]: e["name"] for e in events}
-    scope = request.GET.get("scope", "all")
-    if scope not in names:
-        scope = "all"
-    default_min = MIN_ROUNDS[scope if scope == "all" else scope[0]]
+def _int(value):
     try:
-        min_rounds = max(0, int(request.GET.get("min", default_min)))
-    except ValueError:
-        min_rounds = default_min
-    return _render(request, "players.html", {
-        "scopes": scopes, "events_by_year": _by_year(events), "scope": scope, "scope_name": names[scope],
-        "min_rounds": min_rounds, "rows": data.leaderboard(scope, min_rounds),
-    })
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def stats(request):
+    """Every player's numbers for all years, a year, a tournament or one match (drill down with the menus)."""
+    years = data.years()
+    events = data.event_options()
+    year = _int(request.GET.get("year"))
+    year = year if year in years else None
+    event = next((e for e in events if e["event_id"] == _int(request.GET.get("event"))), None)
+    if event and year and event["year"] != year:
+        event = None
+    if event:
+        year = event["year"]
+    matches = data.event_matches(event["event_id"]) if event else []
+    match = next((m for m in matches if m["match_id"] == _int(request.GET.get("match"))), None)
+
+    context = {"years": list(reversed(years)), "year": year, "event": event, "match": match,
+               "events": [e for e in events if not year or e["year"] == year], "matches": matches}
+    if match:
+        context["match_stats"] = data.match_stats(match["match_id"])
+        context["title"] = f"{match['team1']} vs {match['team2']}"
+    else:
+        default_min = MIN_ROUNDS["e" if event else ("y" if year else "all")]
+        min_rounds = _int(request.GET.get("min"))
+        min_rounds = default_min if min_rounds is None or min_rounds < 0 else min_rounds
+        context.update(min_rounds=min_rounds,
+                       rows=data.player_totals(year, event and event["event_id"], min_rounds),
+                       title=event["name"] if event else (str(year) if year else f"All years ({years[0]}–{years[-1]})"))
+    return _render(request, "stats.html", context)
+
+
+def players(request):
+    """Old leaderboard URL (?scope=all|y2026|e123): send to the stats page."""
+    scope = request.GET.get("scope", "all")
+    query = {"y": "year", "e": "event"}.get(scope[:1])
+    target = reverse("vct:stats") + (f"?{query}={scope[1:]}" if query and scope[1:].isdigit() else "")
+    return redirect(target)
+
+
+def player(request, player_id):
+    p = data.player(player_id)
+    if not p:
+        raise Http404("No such player")
+    return _render(request, "player.html", {"p": p})

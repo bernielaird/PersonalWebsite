@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script src="{% static 'mainsite/theme.js' %}" defer></script>
     <link rel="preload" href="{% static 'fonts/tstar-mono-round.woff2' %}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{% static 'mainsite/styles.css' %}">
     <link rel="icon" href="{% static 'images/foxv1.png' %}" type="image/png">
@@ -10,6 +12,7 @@
     <title>{% block title %}Home{% endblock %}</title>
 </head>
 <body class="hero-page">
+    <button class="theme-toggle" type="button" aria-label="Switch between light and dark mode"></button>
     <div class="center-block">
         <div class="typewriter">
             <h1>hi im <span class="name">bernie</span> :)</h1>

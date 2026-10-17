@@ -70,17 +70,18 @@
 <script>
 (function () {
     const points = JSON.parse(document.getElementById("wp-points").textContent);
-    const css = getComputedStyle(document.body);
-    Chart.defaults.font.family = css.fontFamily;
-    Chart.defaults.color = "#444";
+    const css = () => getComputedStyle(document.documentElement);
+    const color = name => css().getPropertyValue(name).trim();
+    Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+    Chart.defaults.color = color("--text-soft");
     const mmss = s => Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
-    new Chart(document.getElementById("wp-chart"), {
+    const chart = new Chart(document.getElementById("wp-chart"), {
         type: "line",
         data: {
             datasets: [{
                 data: points,
-                borderColor: "#cf6d1d",
-                backgroundColor: "#cf6d1d",
+                borderColor: color("--chart-line"),
+                backgroundColor: color("--chart-line"),
                 borderWidth: 2,
                 tension: 0,
                 pointRadius: ctx => (ctx.raw && ctx.raw.label ? 3.5 : 0),
@@ -110,17 +111,32 @@
                     min: 0,
                     title: { display: true, text: "time into round" },
                     ticks: { callback: v => mmss(v), stepSize: 15 },
-                    grid: { color: "#e6e6e6" },
+                    grid: { color: () => color("--chart-grid") },
                 },
                 y: {
                     min: 0, max: 100,
                     title: { display: true, text: "{{ r.attacker_tag|escapejs }} win probability" },
                     ticks: { callback: v => v + "%", stepSize: 25 },
-                    grid: { color: ctx => (ctx.tick.value === 50 ? "#bbb" : "#e6e6e6") },
+                    grid: { color: ctx => color(ctx.tick.value === 50 ? "--border-strong" : "--chart-grid") },
                 },
             },
         },
     });
+
+    // Recolor when the dark mode button is used or the system theme changes.
+    const recolor = () => {
+        const line = color("--chart-line");
+        chart.data.datasets[0].borderColor = line;
+        chart.data.datasets[0].backgroundColor = line;
+        Chart.defaults.color = color("--text-soft");
+        chart.options.scales.x.ticks.color = Chart.defaults.color;
+        chart.options.scales.y.ticks.color = Chart.defaults.color;
+        chart.options.scales.x.title.color = Chart.defaults.color;
+        chart.options.scales.y.title.color = Chart.defaults.color;
+        chart.update();
+    };
+    window.addEventListener("themechange", recolor);
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", recolor);
 })();
 </script>
 {% endif %}

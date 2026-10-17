@@ -4,7 +4,7 @@
 <h2>{{ event.name }}</h2>
 <p class="note">
     {{ event.region }} &middot; {{ matches|length }} matches
-    {% if has_wpa %}&middot; <a class="project-link" href="{% url 'vct:players' %}?scope=e{{ event.event_id }}">player WPA for this event &rarr;</a>{% endif %}
+    &middot; <a class="project-link" href="{% url 'vct:stats' %}?event={{ event.event_id }}">player stats for this event &rarr;</a>
 </p>
 <table class="vct-table">
     <thead><tr><th>Date</th><th>Stage</th><th>Match</th><th class="num">Maps</th></tr></thead>

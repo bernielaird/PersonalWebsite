@@ -1,11 +1,11 @@
 /* /vct/ pages. Same column, font and colors as the rest of the site. */
 
 .vct-content {
-    width: 50%;
+    width: 60%;  /* left edge lines up with the page title; wider than other pages for tables */
     margin-left: 25%;
     margin-top: 10px;
     font-size: 16px;
-    color: #222;
+    color: var(--text);
 }
 
 .vct-nav {
@@ -14,24 +14,37 @@
     flex-wrap: wrap;
     margin-bottom: 28px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--border);
 }
 
-.vct-nav a { color: #8e4909; }
-.vct-nav a:hover { color: #a9682b; }
+.vct-nav a { color: var(--accent); }
+.vct-nav a:hover { color: var(--accent-hover); }
 
 .vct-content h2 {
     font-size: 22px;
     margin: 36px 0 12px;
 }
 
+.vct-content h3 {
+    font-size: 17px;
+    margin: 28px 0 8px;
+}
+
+.vct-content a.small { font-size: 13px; margin-left: 8px; }
+
+/* Sortable tables (sort.js) */
+.sort-header { cursor: pointer; user-select: none; }
+.sort-header:hover { color: var(--accent); }
+.sort-header[data-dir="desc"]::after { content: " 93"; }
+.sort-header[data-dir="asc"]::after { content: " 91"; }
+
 .lead { font-size: 18px; line-height: 1.5; }
-.note { font-size: 14px; color: #666; line-height: 1.5; }
-.muted { color: #888; }
+.note { font-size: 14px; color: var(--muted); line-height: 1.5; }
+.muted { color: var(--faint); }
 .nowrap { white-space: nowrap; }
 .winner { font-weight: bold; }
-.up { color: #8e4909; }
-.down { color: #555; }
+.up { color: var(--accent); }
+.down { color: var(--muted); }
 
 .steps li { margin-bottom: 8px; line-height: 1.5; }
 
@@ -44,12 +57,12 @@
 }
 
 .stat {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
     padding: 12px 14px;
 }
 
-.stat-value { font-size: 24px; color: #8e4909; }
-.stat-label { font-size: 13px; color: #666; margin-top: 4px; }
+.stat-value { font-size: 24px; color: var(--accent); }
+.stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
 
 /* Tables */
 .table-scroll { overflow-x: auto; }
@@ -65,14 +78,14 @@
 .vct-table td {
     text-align: left;
     padding: 7px 8px;
-    border-bottom: 1px solid #e3e3e3;
+    border-bottom: 1px solid var(--row-line);
     vertical-align: top;
 }
 
 .vct-table th {
     font-weight: normal;
-    color: #666;
-    border-bottom: 1px solid #bbb;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border-strong);
 }
 
 .vct-table .num {
@@ -80,7 +93,7 @@
     font-variant-numeric: tabular-nums;
 }
 
-.vct-table tbody tr:hover { background: #ececec; }
+.vct-table tbody tr:hover { background: var(--hover-bg); }
 
 /* Tabs on the best performances page */
 .tabs {
@@ -93,15 +106,15 @@
 .tabs a {
     font-size: 14px;
     padding: 5px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
 }
 
 .tabs.years a { font-size: 13px; padding: 3px 10px; border-color: transparent; }
 
 .tabs a.active,
 .tabs a.active:hover {
-    border-color: #8e4909;
-    color: #8e4909;
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 /* Events grouped by year on the overview */
@@ -137,12 +150,12 @@
 .legend .sq { width: 14px; height: 14px; vertical-align: middle; margin: 0 4px 0 12px; }
 .legend .sq:first-child { margin-left: 0; }
 
-.sq.w1 { background: #cf6d1d; color: #fff; }
-.sq.w2 { background: #5a5a5d; color: #fff; }
+.sq.w1 { background: var(--chart-line); color: #fff; }
+.sq.w2 { background: var(--loss); color: #fff; }
 .sq.off { opacity: 0.35; }
 
 a.sq.w1:link, a.sq.w1:visited, a.sq.w2:link, a.sq.w2:visited { color: #fff; }
-a.sq:hover { border-color: #111; color: #fff; }
+a.sq:hover { border-color: var(--text); color: #fff; }
 
 /* Round page */
 .round-nav {
@@ -171,14 +184,15 @@ a.sq:hover { border-color: #111; color: #fff; }
     flex-direction: column;
     gap: 4px;
     font-size: 13px;
-    color: #666;
+    color: var(--muted);
 }
 
 .filters select,
 .filters input {
     padding: 6px 8px;
-    border: 1px solid #999;
-    background: white;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--text);
     font: inherit;
     font-size: 14px;
     max-width: 100%;
@@ -188,9 +202,9 @@ a.sq:hover { border-color: #111; color: #fff; }
 
 .filters button {
     padding: 7px 14px;
-    border: 1px solid #111;
-    background: #111;
-    color: white;
+    border: 1px solid var(--button-bg);
+    background: var(--button-bg);
+    color: var(--button-text);
     cursor: pointer;
     font: inherit;
     font-size: 14px;

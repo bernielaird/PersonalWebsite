@@ -20,7 +20,7 @@
 
 <h2>How it works</h2>
 <ol class="steps">
-    <li><b>Scrape.</b> A Java scraper collects every VCT match since 2023 from vlr.gg, including each map's 2D replay data (1,890 matches, ~4 GB).</li>
+    <li><b>Scrape.</b> A Java scraper collects every VCT match since 2023 (franchising era) from vlr.gg, including each map's 2D replay data (1,890 matches, ~4 GB).</li>
     <li><b>Clean.</b> The pages become a validated SQLite database: rounds, buys, ~600k kills, plants and defuses, 3.7M player positions.</li>
     <li><b>Model.</b> A calibrated LightGBM model predicts the round winner from players alive, time, spike state and economy. Trained on 2023&ndash;2025, tested on all of 2026.</li>
     <li><b>Credit.</b> Each kill's change in win probability goes to the killer and victim. Deaths that are traded within 5 seconds cost half as much.</li>

@@ -1,0 +1,77 @@
+{% extends "vct/base.html" %}
+{% load static vct_extras %}
+{% block title %}{{ p.name }}{% endblock %}
+{% block content %}
+<h2>{{ p.name }}</h2>
+{% with o=p.overall %}
+<div class="stat-row">
+    <div class="stat"><div class="stat-value">{{ o.maps }}</div><div class="stat-label">maps</div></div>
+    <div class="stat"><div class="stat-value">{{ o.rating|floatformat:2 }}</div><div class="stat-label">vlr rating</div></div>
+    <div class="stat"><div class="stat-value">{{ o.per_round|signed:2 }}</div><div class="stat-label">WPA per round</div></div>
+    <div class="stat"><div class="stat-value">{{ o.wpa|signed:0 }}</div><div class="stat-label">total WPA (% of a round)</div></div>
+</div>
+{% endwith %}
+<p class="note">WPA is % of a round win; WPA/rd is per round played on maps with replay data. Click a column to sort.</p>
+
+<h3>By year</h3>
+<div class="table-scroll">
+<table class="vct-table sortable">
+    <thead><tr><th>Year</th><th class="num">Maps</th><th class="num">Rounds</th><th class="num">K</th><th class="num">D</th><th class="num">A</th>
+        <th class="num">ACS</th><th class="num">Rating</th><th class="num">WPA</th><th class="num">WPA/rd</th></tr></thead>
+    <tbody>
+    {% for r in p.years %}
+        <tr>
+            <td><a class="project-link" href="{% url 'vct:stats' %}?year={{ r.year }}&min=0">{{ r.year }}</a></td>
+            <td class="num">{{ r.maps }}</td><td class="num">{{ r.rounds }}</td>
+            <td class="num">{{ r.kills }}</td><td class="num">{{ r.deaths }}</td><td class="num">{{ r.assists }}</td>
+            <td class="num">{{ r.acs|floatformat:0 }}</td><td class="num">{{ r.rating|floatformat:2 }}</td>
+            <td class="num">{{ r.wpa|signed:0 }}</td><td class="num"><b>{{ r.per_round|signed:2 }}</b></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<h3>By tournament</h3>
+<div class="table-scroll">
+<table class="vct-table sortable">
+    <thead><tr><th>Tournament</th><th class="num">Maps</th><th class="num">Rounds</th><th class="num">K</th><th class="num">D</th>
+        <th class="num">ACS</th><th class="num">Rating</th><th class="num">WPA</th><th class="num">WPA/rd</th></tr></thead>
+    <tbody>
+    {% for r in p.events %}
+        <tr>
+            <td><a class="project-link" href="{% url 'vct:stats' %}?event={{ r.event_id }}">{{ r.name }}</a></td>
+            <td class="num">{{ r.maps }}</td><td class="num">{{ r.rounds }}</td>
+            <td class="num">{{ r.kills }}</td><td class="num">{{ r.deaths }}</td>
+            <td class="num">{{ r.acs|floatformat:0 }}</td><td class="num">{{ r.rating|floatformat:2 }}</td>
+            <td class="num">{{ r.wpa|signed:0 }}</td><td class="num"><b>{{ r.per_round|signed:2 }}</b></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<h3>Every match</h3>
+<div class="table-scroll">
+<table class="vct-table sortable">
+    <thead><tr><th>Date</th><th>Match</th><th>Tournament</th><th class="num">Maps</th><th class="num">K</th><th class="num">D</th>
+        <th class="num">Rating</th><th class="num">WPA</th><th class="num">WPA/rd</th></tr></thead>
+    <tbody>
+    {% for r in p.matches %}
+        <tr>
+            <td class="nowrap">{{ r.start_time|slice:":10" }}</td>
+            <td class="nowrap"><a class="project-link" href="{% url 'vct:stats' %}?event={{ r.event_id|default:'' }}&match={{ r.match_id }}">{{ r.team }} vs {{ r.opponent }}</a>
+                <span class="{% if r.maps_won > r.maps_lost %}up{% else %}muted{% endif %}">{{ r.maps_won }}&ndash;{{ r.maps_lost }}</span></td>
+            <td class="muted">{{ r.event }}</td>
+            <td class="num">{{ r.maps }}</td>
+            <td class="num">{{ r.kills }}</td><td class="num">{{ r.deaths }}</td>
+            <td class="num">{{ r.rating|floatformat:2 }}</td>
+            <td class="num">{{ r.wpa|signed:0 }}</td><td class="num"><b>{{ r.per_round|signed:2 }}</b></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'vct/sort.js' %}"></script>{% endblock %}
