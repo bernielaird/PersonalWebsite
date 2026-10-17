@@ -1,20 +1,46 @@
 {% extends "vct/base.html" %}
+{% load static vct_extras %}
 {% block title %}{{ match.team1 }} vs {{ match.team2 }}{% endblock %}
 {% block content %}
 <div style="{{ match.style }}">
-<p class="note"><a class="project-link" href="{% url 'vct:event' match.event_id %}">{{ match.event }}</a> &middot; {{ match.stage|default:"" }} &middot; {{ match.start_time|slice:":10" }}</p>
+<p class="note">
+    <a class="project-link" href="{% url 'vct:matches' %}?event={{ match.event_id }}">{{ match.event }}</a>
+    &middot; {{ match.stage|default:"" }} &middot; {{ match.start_time|slice:":10" }}
+</p>
 <h2>{{ match.team1 }} {{ match.team1_score }}&ndash;{{ match.team2_score }} {{ match.team2 }}</h2>
-<p><a class="project-link" href="{% url 'vct:stats' %}?event={{ match.event_id }}&match={{ match.match_id }}">player stats for this match &rarr;</a></p>
 
 <p class="legend">
-    <span class="sq w1"></span> {{ match.team1_tag|default:match.team1 }} won the round
-    <span class="sq w2"></span> {{ match.team2_tag|default:match.team2 }} won the round
+    <span class="team-swatch team1"></span> {{ match.team1 }}
+    <span class="team-swatch team2"></span> {{ match.team2 }}
 </p>
+
+<h3>Whole match</h3>
+<div class="table-scroll">
+<table class="vct-table sortable">
+    <thead><tr><th>Player</th><th>Agents</th><th class="num">Maps</th><th class="num">K</th><th class="num">D</th><th class="num">A</th>
+        <th class="num">ACS</th><th class="num">Rating</th><th class="num">WPA</th><th class="num">WPA/rd</th></tr></thead>
+    <tbody>
+    {% for r in match.totals %}
+        <tr class="{% if r.team_id == match.team1_id %}team1{% else %}team2{% endif %}">
+            <td class="nowrap"><a href="{% url 'vct:player' r.player_id %}">{{ r.player }}</a>
+                <span class="team-tag">{% if r.team_id == match.team1_id %}{{ match.team1_tag }}{% else %}{{ match.team2_tag }}{% endif %}</span></td>
+            <td class="muted">{{ r.agents|join:", " }}</td>
+            <td class="num">{{ r.maps }}</td>
+            <td class="num">{{ r.kills }}</td><td class="num">{{ r.deaths }}</td><td class="num">{{ r.assists }}</td>
+            <td class="num">{{ r.acs|floatformat:0 }}</td>
+            <td class="num">{{ r.rating|floatformat:2 }}</td>
+            <td class="num"><b>{{ r.wpa|signed:0 }}</b></td>
+            <td class="num">{{ r.per_round|signed:2 }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
 
 {% for mp in match.maps %}
 <div class="map-block">
     <div class="map-head">
-        <b>Map {{ mp.map_number }}: {{ mp.map_name|default:"?" }}</b>
+        <h3>Map {{ mp.map_number }}: {{ mp.map_name|default:"?" }}</h3>
         <span class="nowrap">{{ mp.team1_score }}&ndash;{{ mp.team2_score }}</span>
     </div>
     <div class="strip">
@@ -29,9 +55,38 @@
             {% endif %}
         {% endfor %}
     </div>
-    {% if not mp.has_replay %}<p class="note">No 2D replay for this map, so no win probability.</p>{% endif %}
+    {% if mp.has_replay %}
+    <p class="note">Each square is a round, in the winner's color. Click one to see how each kill moved the odds.</p>
+    {% else %}
+    <p class="note">No 2D replay for this map, so no win probability or WPA.</p>
+    {% endif %}
+
+    {% if mp.players %}
+    <div class="table-scroll">
+    <table class="vct-table sortable">
+        <thead><tr><th>Player</th><th>Agent</th><th class="num">K</th><th class="num">D</th><th class="num">A</th><th class="num">FK</th><th class="num">FD</th>
+            <th class="num">ACS</th><th class="num">ADR</th><th class="num">KAST</th><th class="num">Rating</th><th class="num">WPA</th></tr></thead>
+        <tbody>
+        {% for r in mp.players %}
+            <tr class="{% if r.team_id == match.team1_id %}team1{% else %}team2{% endif %}">
+                <td class="nowrap"><a href="{% url 'vct:player' r.player_id %}">{{ r.player }}</a>
+                    <span class="team-tag">{% if r.team_id == match.team1_id %}{{ match.team1_tag }}{% else %}{{ match.team2_tag }}{% endif %}</span></td>
+                <td class="muted">{{ r.agent|default:"" }}</td>
+                <td class="num">{{ r.kills }}</td><td class="num">{{ r.deaths }}</td><td class="num">{{ r.assists }}</td>
+                <td class="num">{{ r.first_kills }}</td><td class="num">{{ r.first_deaths }}</td>
+                <td class="num">{{ r.acs }}</td><td class="num">{{ r.adr|default:"" }}</td>
+                <td class="num">{% if r.kast_pct is not None %}{{ r.kast_pct }}%{% endif %}</td>
+                <td class="num">{{ r.rating|floatformat:2 }}</td>
+                <td class="num"><b>{{ r.wpa|signed:0 }}</b></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% endif %}
 </div>
 {% endfor %}
-<p class="note">Pick a round to see how each kill moved the odds.</p>
 </div>
 {% endblock %}
+
+{% block scripts %}<script src="{% static 'vct/sort.js' %}"></script>{% endblock %}

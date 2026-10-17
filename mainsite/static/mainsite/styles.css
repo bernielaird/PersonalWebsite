@@ -11,7 +11,7 @@
     font-display: block;
 }
 
-/* Colors. Always light unless the visitor picks dark with the theme button
+/* Colors. Light by default; dark follows the system setting until the theme button is used
    (theme.js stores the choice and sets data-theme on <html>). */
 :root {
     color-scheme: light;
@@ -35,6 +35,32 @@
     --button-bg: #111;
     --button-text: #fff;
     --bar-shadow: 0 -1px 0 rgba(0,0,0,0.15), 0 -3px 18px rgba(0,0,0,0.12), 0 -6px 40px rgba(0,0,0,0.10);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --bg: #16161a;
+        --text: #e6e4e1;
+        --text-soft: #c4c1bd;
+        --muted: #9d9a97;
+        --faint: #85827f;
+        --border: #34343a;
+        --border-strong: #4a4a50;
+        --row-line: #2a2a30;
+        --hover-bg: #222228;
+        --accent: #e69d69;
+        --accent-name: #df8d51;
+        --accent-hover: #f2bd99;
+        --chart-line: #df8d51;
+        --chart-grid: #2c2c32;
+        --loss: #6a6a6e;
+        --input-bg: #222228;
+        --input-border: #4a4a50;
+        --button-bg: #e6e4e1;
+        --button-text: #16161a;
+        --bar-shadow: 0 -1px 0 rgba(0,0,0,0.6), 0 -3px 18px rgba(0,0,0,0.4);
+    }
 }
 
 :root[data-theme="dark"] {
@@ -331,3 +357,6 @@ a.name:hover {
 
 .theme-toggle::after { content: "dark"; }
 :root[data-theme="dark"] .theme-toggle::after { content: "light"; }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme-toggle::after { content: "light"; }
+}

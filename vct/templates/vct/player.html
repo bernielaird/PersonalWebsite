@@ -60,7 +60,7 @@
     {% for r in p.matches %}
         <tr>
             <td class="nowrap">{{ r.start_time|slice:":10" }}</td>
-            <td class="nowrap"><a class="project-link" href="{% url 'vct:stats' %}?event={{ r.event_id|default:'' }}&match={{ r.match_id }}">{{ r.team }} vs {{ r.opponent }}</a>
+            <td class="nowrap"><a class="project-link" href="{% url 'vct:match' r.match_id %}">{{ r.team }} vs {{ r.opponent }}</a>
                 <span class="{% if r.maps_won > r.maps_lost %}up{% else %}muted{% endif %}">{{ r.maps_won }}&ndash;{{ r.maps_lost }}</span></td>
             <td class="muted">{{ r.event }}</td>
             <td class="num">{{ r.maps }}</td>

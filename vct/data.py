@@ -64,20 +64,50 @@ MATCH_SQL = """SELECT m.*, t1.name AS team1, t1.tag AS team1_tag, t2.name AS tea
                JOIN events e USING (event_id)"""
 
 
-def event_matches(event_id):
-    return _all(MATCH_SQL + " WHERE m.event_id = ? ORDER BY m.start_time DESC", (event_id,))
+def match_list(year=None, event_id=None, team_id=None):
+    """Matches for the matches tab, newest first."""
+    where, params = ["1"], []
+    if year:
+        where.append("e.year = ?")
+        params.append(year)
+    if event_id:
+        where.append("m.event_id = ?")
+        params.append(event_id)
+    if team_id:
+        where.append("? IN (m.team1_id, m.team2_id)")
+        params.append(team_id)
+    return _all(MATCH_SQL + f" WHERE {' AND '.join(where)} ORDER BY m.start_time DESC", tuple(params))
+
+
+def team_options(year=None, event_id=None):
+    """Teams that played in the given year/event, for the matches tab's team menu."""
+    where, params = ["1"], []
+    if year:
+        where.append("e.year = ?")
+        params.append(year)
+    if event_id:
+        where.append("m.event_id = ?")
+        params.append(event_id)
+    return _all(f"""SELECT DISTINCT t.team_id, t.name FROM matches m JOIN events e USING (event_id)
+                    JOIN teams t ON t.team_id IN (m.team1_id, m.team2_id)
+                    WHERE {' AND '.join(where)} ORDER BY t.name COLLATE NOCASE""", tuple(params))
 
 
 def match(match_id):
+    """A match with its maps, each map's rounds, and every player's stats (whole match and per map)."""
     m = _one(MATCH_SQL + " WHERE m.match_id = ?", (match_id,))
     if not m:
         return None
     m["style"] = match_style(m)
+    stats = match_stats(match_id)
+    m["totals"] = stats["totals"]
+    rows_by_map = {mp["game_id"]: mp["rows"] for mp in stats["maps"]}
     m["maps"] = _all("SELECT * FROM maps WHERE match_id = ? ORDER BY map_number", (match_id,))
     for mp in m["maps"]:
         mp["rounds"] = _all("""SELECT round_num, winner_id, outcome, team1_score, team2_score,
                                       start_prob IS NOT NULL AS has_trace
                                FROM rounds WHERE game_id = ? ORDER BY round_num""", (mp["game_id"],))
+        mp["players"] = rows_by_map.get(mp["game_id"], [])
     return m
 
 

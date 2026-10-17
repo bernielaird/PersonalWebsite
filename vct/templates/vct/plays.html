@@ -59,7 +59,7 @@
             {% endif %}
             <td>
                 {% if kind == "match" %}
-                    <a class="project-link" href="{% url 'vct:stats' %}?event={{ p.event_id }}&match={{ p.match_id }}">vs {{ p.opponent }}, {{ p.maps_won }}&ndash;{{ p.maps_lost }}</a>
+                    <a class="project-link" href="{% url 'vct:match' p.match_id %}">vs {{ p.opponent }}, {{ p.maps_won }}&ndash;{{ p.maps_lost }}</a>
                 {% elif kind == "map" %}
                     <a class="project-link" href="{% url 'vct:match' p.match_id %}">vs {{ p.opponent }}, {{ p.map_name }} {{ p.rounds_won }}&ndash;{{ p.rounds_lost }}</a>
                 {% else %}

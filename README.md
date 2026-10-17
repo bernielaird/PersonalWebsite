@@ -18,9 +18,10 @@ Every page has a light/dark mode button. The site starts in light mode and remem
 
 An interactive front end for a model that estimates, after every kill and spike plant in pro Valorant (VCT, 2023 onward), each team's chance of winning the round. Each swing is credited to the players who caused it: **win probability added (WPA)**.
 
+- **Matches:** every match, filterable by year, tournament and team. Each match page has the round-by-round results for every map (in team colors) and every player's stats, for the whole match and each map.
 - **Round explorer:** a win-probability chart for any round, kill by kill, with each player's credit.
 - **Best performances:** the top single rounds, maps and matches, for all years, a year or a single tournament.
-- **Stats:** every player's numbers for all years, a year, a tournament or a single match, with sortable columns.
+- **Stats:** every player's numbers for all years, a year or a tournament, with sortable columns.
 - **Player pages:** each player's record by year, by tournament and for every match.
 
 The scraper, database and model live in [vctstats](https://github.com/bernielaird/vctstats). This site only reads a small read-only SQLite file that the project exports (`vct_site.sqlite`, about 40 MB).
@@ -43,7 +44,7 @@ vct/             The VCT app
   data.py        Read-only queries on data/vct_site.sqlite
   views.py, urls.py
   fetch_data.py  Downloads the data file at build time
-  templates/vct/ Overview, event, match, round, best performances, stats, player pages
+  templates/vct/ Overview, matches, match, round, best performances, stats, player pages
   static/vct/    vct.css, sort.js
   data/          vct_site.sqlite (downloaded, not in git)
 ```

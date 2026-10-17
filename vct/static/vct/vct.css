@@ -131,6 +131,10 @@
 .vct-table tr.team2 .team-tag { color: var(--team2-l, var(--team2)); font-weight: bold; }
 :root[data-theme="dark"] .vct-table tr.team1 .team-tag { color: var(--team1-d, var(--team1)); }
 :root[data-theme="dark"] .vct-table tr.team2 .team-tag { color: var(--team2-d, var(--team2)); }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .vct-table tr.team1 .team-tag { color: var(--team1-d, var(--team1)); }
+    :root:not([data-theme="light"]) .vct-table tr.team2 .team-tag { color: var(--team2-d, var(--team2)); }
+}
 
 .team-swatch { display: inline-block; width: 12px; height: 12px; vertical-align: middle; margin: 0 4px 0 14px; }
 .team-swatch:first-child { margin-left: 0; }
@@ -138,13 +142,16 @@
 .team-swatch.team2 { background: var(--team2); }
 
 /* Round strip */
-.map-block { margin: 22px 0; }
+.map-block { margin: 36px 0 22px; }
 
 .map-head {
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
     margin-bottom: 8px;
 }
+
+.map-head h3 { margin: 0; }
 
 .strip {
     display: flex;

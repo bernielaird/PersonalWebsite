@@ -3,7 +3,7 @@
 {% block title %}Round {{ r.round_num }}: {{ r.match.team1 }} vs {{ r.match.team2 }}{% endblock %}
 {% block content %}
 <p class="note">
-    <a class="project-link" href="{% url 'vct:event' r.match.event_id %}">{{ r.match.event }}</a> &middot;
+    <a class="project-link" href="{% url 'vct:matches' %}?event={{ r.match.event_id }}">{{ r.match.event }}</a> &middot;
     {{ r.match.stage|default:"" }} &middot;
     <a class="project-link" href="{% url 'vct:match' r.match_id %}">{{ r.match.team1 }} vs {{ r.match.team2 }}</a>
 </p>
@@ -123,7 +123,7 @@
         },
     });
 
-    // Recolor when the dark mode button is used.
+    // Recolor when the dark mode button is used or the system theme changes.
     const recolor = () => {
         const line = color("--chart-line");
         chart.data.datasets[0].borderColor = line;
@@ -136,6 +136,7 @@
         chart.update();
     };
     window.addEventListener("themechange", recolor);
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", recolor);
 })();
 </script>
 {% endif %}

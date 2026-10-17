@@ -45,7 +45,7 @@
         <tbody>
         {% for e in events %}
             <tr>
-                <td><a class="project-link" href="{% url 'vct:event' e.event_id %}">{{ e.name }}</a></td>
+                <td><a class="project-link" href="{% url 'vct:matches' %}?event={{ e.event_id }}">{{ e.name }}</a></td>
                 <td>{{ e.region }}</td>
                 <td class="num">{{ e.matches }}</td>
             </tr>

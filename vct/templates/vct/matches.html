@@ -1,0 +1,49 @@
+{% extends "vct/base.html" %}
+{% block title %}Matches: {{ title }}{% endblock %}
+{% block content %}
+<h2>Matches: {{ title }}</h2>
+
+<form class="filters" method="get">
+    <label>Year
+        <select name="year" onchange="this.form.event.value=''; this.form.team.value=''; this.form.submit()">
+            <option value="">All years</option>
+            {% for y in years %}<option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>{% endfor %}
+        </select>
+    </label>
+    <label>Tournament
+        <select name="event" onchange="this.form.submit()">
+            <option value="">All tournaments</option>
+            {% for e in events %}<option value="{{ e.event_id }}" {% if e.event_id == event.event_id %}selected{% endif %}>{{ e.name }}</option>{% endfor %}
+        </select>
+    </label>
+    <label>Team
+        <select name="team" onchange="this.form.submit()">
+            <option value="">All teams</option>
+            {% for t in teams %}<option value="{{ t.team_id }}" {% if t.team_id == team.team_id %}selected{% endif %}>{{ t.name }}</option>{% endfor %}
+        </select>
+    </label>
+</form>
+
+<p class="note">{{ matches|length }} match{{ matches|length|pluralize:"es" }}, newest first. Open one for its rounds and every player's stats.</p>
+
+<div class="table-scroll">
+<table class="vct-table">
+    <thead><tr><th>Date</th><th>Match</th><th class="num">Maps</th>{% if not event %}<th>Tournament</th>{% endif %}<th>Stage</th></tr></thead>
+    <tbody>
+    {% for m in matches %}
+        <tr>
+            <td class="nowrap">{{ m.start_time|slice:":10" }}</td>
+            <td><a class="project-link" href="{% url 'vct:match' m.match_id %}">
+                <span class="{% if m.winner_id == m.team1_id %}winner{% endif %}">{{ m.team1 }}</span> vs
+                <span class="{% if m.winner_id == m.team2_id %}winner{% endif %}">{{ m.team2 }}</span></a></td>
+            <td class="num nowrap">{{ m.team1_score }}&ndash;{{ m.team2_score }}</td>
+            {% if not event %}<td class="muted">{{ m.event }}</td>{% endif %}
+            <td class="muted">{{ m.stage|default:"" }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5">No matches for these filters.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

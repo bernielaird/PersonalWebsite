@@ -5,7 +5,6 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from . import data
-from .colors import match_style
 
 FEATURED_ROUND = (280042, 23)  # Americas Stage 2 grand final, map 5 (Haven), round 23
 GITHUB = "https://github.com/bernielaird/vctstats"
@@ -32,11 +31,51 @@ def index(request):
     })
 
 
+def _int(value):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _year_event(request, events, years):
+    """The ?year= and ?event= filters, validated. An event implies its year; a mismatched pair drops the event."""
+    year = _int(request.GET.get("year"))
+    year = year if year in years else None
+    event = next((e for e in events if e["event_id"] == _int(request.GET.get("event"))), None)
+    if event and year and event["year"] != year:
+        event = None
+    if event:
+        year = event["year"]
+    return year, event
+
+
+def _title(year, event, years):
+    return event["name"] if event else (str(year) if year else f"All years ({years[0]}–{years[-1]})")
+
+
 def event(request, event_id):
-    e = data.event(event_id)
-    if not e:
+    """Old event page: the matches tab, filtered to that event."""
+    if not data.event(event_id):
         raise Http404("No such event")
-    return _render(request, "event.html", {"event": e, "matches": data.event_matches(event_id)})
+    return redirect(reverse("vct:matches") + f"?event={event_id}")
+
+
+def matches(request):
+    """Browse matches by year, tournament and team. Defaults to the latest year."""
+    years = data.years()
+    events = data.event_options()
+    if not request.GET:
+        return redirect(reverse("vct:matches") + f"?year={years[-1]}")
+    year, event = _year_event(request, events, years)
+    teams = data.team_options(year, event and event["event_id"])
+    team = next((t for t in teams if t["team_id"] == _int(request.GET.get("team"))), None)
+    title = _title(year, event, years) + (f": {team['name']}" if team else "")
+    return _render(request, "matches.html", {
+        "years": list(reversed(years)), "year": year, "event": event, "team": team, "teams": teams,
+        "events": [e for e in events if not year or e["year"] == year], "title": title,
+        "matches": data.match_list(year, event and event["event_id"], team and team["team_id"]),
+    })
 
 
 def match(request, match_id):
@@ -64,15 +103,9 @@ def plays(request):
     kind = request.GET.get("view", "round")
     if kind not in dict(PLAY_TABS):
         kind = "round"
-    year = _int(request.GET.get("year"))
-    year = year if year in years else None
-    event = next((e for e in events if e["event_id"] == _int(request.GET.get("event"))), None)
-    if event and year and event["year"] != year:
-        event = None
-    if event:
-        year = event["year"]
+    year, event = _year_event(request, events, years)
     scope = f"e{event['event_id']}" if event else (f"y{year}" if year else "all")
-    title = event["name"] if event else (str(year) if year else f"All years ({years[0]}–{years[-1]})")
+    title = _title(year, event, years)
     return _render(request, "plays.html", {
         "tabs": PLAY_TABS, "kind": kind, "years": list(reversed(years)), "year": year, "event": event,
         "events": [e for e in events if not year or e["year"] == year], "title": title,
@@ -80,41 +113,23 @@ def plays(request):
     })
 
 
-def _int(value):
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return None
-
-
 def stats(request):
-    """Every player's numbers for all years, a year, a tournament or one match (drill down with the menus)."""
+    """Every player's numbers for all years, a year or a tournament."""
+    match_id = _int(request.GET.get("match"))
+    if match_id:  # old links to a single match: that's the match page now
+        return redirect("vct:match", match_id=match_id)
     years = data.years()
     events = data.event_options()
-    year = _int(request.GET.get("year"))
-    year = year if year in years else None
-    event = next((e for e in events if e["event_id"] == _int(request.GET.get("event"))), None)
-    if event and year and event["year"] != year:
-        event = None
-    if event:
-        year = event["year"]
-    matches = data.event_matches(event["event_id"]) if event else []
-    match = next((m for m in matches if m["match_id"] == _int(request.GET.get("match"))), None)
-
-    context = {"years": list(reversed(years)), "year": year, "event": event, "match": match,
-               "events": [e for e in events if not year or e["year"] == year], "matches": matches}
-    if match:
-        match["style"] = match_style(match)
-        context["match_stats"] = data.match_stats(match["match_id"])
-        context["title"] = f"{match['team1']} vs {match['team2']}"
-    else:
-        default_min = MIN_ROUNDS["e" if event else ("y" if year else "all")]
-        min_rounds = _int(request.GET.get("min"))
-        min_rounds = default_min if min_rounds is None or min_rounds < 0 else min_rounds
-        context.update(min_rounds=min_rounds,
-                       rows=data.player_totals(year, event and event["event_id"], min_rounds),
-                       title=event["name"] if event else (str(year) if year else f"All years ({years[0]}–{years[-1]})"))
-    return _render(request, "stats.html", context)
+    year, event = _year_event(request, events, years)
+    default_min = MIN_ROUNDS["e" if event else ("y" if year else "all")]
+    min_rounds = _int(request.GET.get("min"))
+    min_rounds = default_min if min_rounds is None or min_rounds < 0 else min_rounds
+    return _render(request, "stats.html", {
+        "years": list(reversed(years)), "year": year, "event": event,
+        "events": [e for e in events if not year or e["year"] == year],
+        "min_rounds": min_rounds, "rows": data.player_totals(year, event and event["event_id"], min_rounds),
+        "title": _title(year, event, years),
+    })
 
 
 def players(request):

@@ -6,96 +6,23 @@
 
 <form class="filters" method="get">
     <label>Year
-        <select name="year" onchange="this.form.event.value=''; if (this.form.match) this.form.match.value=''; this.form.submit()">
+        <select name="year" onchange="this.form.event.value=''; this.form.submit()">
             <option value="">All years</option>
             {% for y in years %}<option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>{% endfor %}
         </select>
     </label>
     <label>Tournament
-        <select name="event" onchange="if (this.form.match) this.form.match.value=''; this.form.submit()">
+        <select name="event" onchange="this.form.submit()">
             <option value="">All tournaments</option>
             {% for e in events %}<option value="{{ e.event_id }}" {% if e.event_id == event.event_id %}selected{% endif %}>{{ e.name }}</option>{% endfor %}
         </select>
     </label>
-    {% if event %}
-    <label>Match
-        <select name="match" onchange="this.form.submit()">
-            <option value="">All matches</option>
-            {% for m in matches %}<option value="{{ m.match_id }}" {% if m.match_id == match.match_id %}selected{% endif %}>{{ m.start_time|slice:":10" }} &middot; {{ m.team1_tag|default:m.team1 }} vs {{ m.team2_tag|default:m.team2 }}</option>{% endfor %}
-        </select>
-    </label>
-    {% endif %}
-    {% if not match %}
     <label>Min rounds
         <input type="number" name="min" value="{{ min_rounds }}" min="0" step="50">
     </label>
     <button type="submit">show</button>
-    {% endif %}
 </form>
 
-{% if match %}
-    <div style="{{ match.style }}">
-    {% with s=match_stats %}
-    <p>
-        <a class="project-link" href="{% url 'vct:match' match.match_id %}">{{ match.team1 }} {{ match.team1_score }}&ndash;{{ match.team2_score }} {{ match.team2 }} &rarr; round by round</a>
-        <span class="muted">{{ match.stage|default:"" }} &middot; {{ match.start_time|slice:":10" }}</span>
-    </p>
-    <p class="legend">
-        <span class="team-swatch team1"></span> {{ match.team1 }}
-        <span class="team-swatch team2"></span> {{ match.team2 }}
-    </p>
-    <h3>Whole match</h3>
-    <div class="table-scroll">
-    <table class="vct-table sortable">
-        <thead><tr><th>Player</th><th>Agents</th><th class="num">Maps</th><th class="num">K</th><th class="num">D</th><th class="num">A</th>
-            <th class="num">ACS</th><th class="num">Rating</th><th class="num">WPA</th><th class="num">WPA/rd</th></tr></thead>
-        <tbody>
-        {% for r in s.totals %}
-            <tr class="{% if r.team_id == match.team1_id %}team1{% else %}team2{% endif %}">
-                <td class="nowrap"><a href="{% url 'vct:player' r.player_id %}">{{ r.player }}</a>
-                    <span class="team-tag">{% if r.team_id == match.team1_id %}{{ match.team1_tag }}{% else %}{{ match.team2_tag }}{% endif %}</span></td>
-                <td class="muted">{{ r.agents|join:", " }}</td>
-                <td class="num">{{ r.maps }}</td>
-                <td class="num">{{ r.kills }}</td><td class="num">{{ r.deaths }}</td><td class="num">{{ r.assists }}</td>
-                <td class="num">{{ r.acs|floatformat:0 }}</td>
-                <td class="num">{{ r.rating|floatformat:2 }}</td>
-                <td class="num"><b>{{ r.wpa|signed:0 }}</b></td>
-                <td class="num">{{ r.per_round|signed:2 }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    </div>
-
-    {% for mp in s.maps %}
-    <h3>Map {{ mp.map_number }}: {{ mp.map_name|default:"?" }}
-        {% if mp.has_replay %}<a class="project-link small" href="{% url 'vct:match' match.match_id %}">rounds &rarr;</a>{% endif %}</h3>
-    <div class="table-scroll">
-    <table class="vct-table sortable">
-        <thead><tr><th>Player</th><th>Agent</th><th class="num">K</th><th class="num">D</th><th class="num">A</th><th class="num">FK</th><th class="num">FD</th>
-            <th class="num">ACS</th><th class="num">ADR</th><th class="num">KAST</th><th class="num">Rating</th><th class="num">WPA</th></tr></thead>
-        <tbody>
-        {% for r in mp.rows %}
-            <tr class="{% if r.team_id == match.team1_id %}team1{% else %}team2{% endif %}">
-                <td class="nowrap"><a href="{% url 'vct:player' r.player_id %}">{{ r.player }}</a>
-                    <span class="team-tag">{% if r.team_id == match.team1_id %}{{ match.team1_tag }}{% else %}{{ match.team2_tag }}{% endif %}</span></td>
-                <td class="muted">{{ r.agent|default:"" }}</td>
-                <td class="num">{{ r.kills }}</td><td class="num">{{ r.deaths }}</td><td class="num">{{ r.assists }}</td>
-                <td class="num">{{ r.first_kills }}</td><td class="num">{{ r.first_deaths }}</td>
-                <td class="num">{{ r.acs }}</td><td class="num">{{ r.adr|default:"" }}</td>
-                <td class="num">{% if r.kast_pct is not None %}{{ r.kast_pct }}%{% endif %}</td>
-                <td class="num">{{ r.rating|floatformat:2 }}</td>
-                <td class="num"><b>{{ r.wpa|signed:0 }}</b></td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    </div>
-    {% if not mp.has_replay %}<p class="note">No 2D replay for this map, so no WPA.</p>{% endif %}
-    {% endfor %}
-    {% endwith %}
-    </div>
-{% else %}
     <p class="note">
         Every player who played {% if event %}in this tournament{% elif year %}in {{ year }}{% else %}since {{ years|last }}{% endif %}{% if min_rounds %} with at least {{ min_rounds }} rounds{% endif %}.
         Click a column to sort, or a player for their full history.
@@ -133,7 +60,6 @@
     </table>
     </div>
     {% if event and rows and rows.0.wpa is None %}<p class="note">No 2D replays for this tournament, so no WPA.</p>{% endif %}
-{% endif %}
 {% endblock %}
 
 {% block scripts %}<script src="{% static 'vct/sort.js' %}"></script>{% endblock %}
