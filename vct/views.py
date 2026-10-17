@@ -8,7 +8,7 @@ from . import data
 
 FEATURED_ROUND = (280042, 23)  # Americas Stage 2 grand final, map 5 (Haven), round 23
 GITHUB = "https://github.com/bernielaird/vctstats"
-MIN_ROUNDS = {"all": 1000, "y": 300, "e": 0}  # default stats cut-off by scope type
+MIN_ROUNDS = {"all": 0, "y": 0, "e": 0}  # default stats cut-off by scope type
 
 
 def _render(request, template, context):

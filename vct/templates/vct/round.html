@@ -123,7 +123,7 @@
         },
     });
 
-    // Recolor when the dark mode button is used or the system theme changes.
+    // Recolor when the dark mode button is used.
     const recolor = () => {
         const line = color("--chart-line");
         chart.data.datasets[0].borderColor = line;
@@ -136,7 +136,6 @@
         chart.update();
     };
     window.addEventListener("themechange", recolor);
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", recolor);
 })();
 </script>
 {% endif %}
