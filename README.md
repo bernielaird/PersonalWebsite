@@ -19,7 +19,7 @@ Every page has a light/dark mode button. The site starts in light mode and remem
 An interactive front end for a model that estimates, after every kill and spike plant in pro Valorant (VCT, 2023 onward), each team's chance of winning the round. Each swing is credited to the players who caused it: **win probability added (WPA)**.
 
 - **Round explorer:** a win-probability chart for any round, kill by kill, with each player's credit.
-- **Best performances:** the top single rounds, kills, maps and matches, for every year or all years together.
+- **Best performances:** the top single rounds, maps and matches, for all years, a year or a single tournament.
 - **Stats:** every player's numbers for all years, a year, a tournament or a single match, with sortable columns.
 - **Player pages:** each player's record by year, by tournament and for every match.
 

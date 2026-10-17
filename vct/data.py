@@ -141,8 +141,7 @@ def round_detail(game_id, round_num):
 
 def plays(scope, kind, limit):
     rows = _all("""SELECT p.*, pl.name AS player, t.tag AS team, mp.map_name, mp.map_number, e.name AS event,
-                          m.stage, a.weapon, a.prob_before, a.prob_after, a.action,
-                          a.actor_team_id = r.attacker_id AS actor_attacking,
+                          m.stage, m.event_id,
                           CASE WHEN m.team1_id = p.team_id THEN t2.tag ELSE t1.tag END AS opponent,
                           CASE WHEN m.team1_id = p.team_id THEN m.team1_score ELSE m.team2_score END AS maps_won,
                           CASE WHEN m.team1_id = p.team_id THEN m.team2_score ELSE m.team1_score END AS maps_lost,
@@ -152,17 +151,16 @@ def plays(scope, kind, limit):
                    JOIN matches m ON m.match_id = p.match_id JOIN events e USING (event_id)
                    JOIN teams t1 ON t1.team_id = m.team1_id JOIN teams t2 ON t2.team_id = m.team2_id
                    LEFT JOIN maps mp ON mp.game_id = p.game_id
-                   LEFT JOIN actions a ON a.game_id = p.game_id AND a.round_num = p.round_num
-                                      AND a.event_num = p.event_num
-                   LEFT JOIN rounds r ON r.game_id = p.game_id AND r.round_num = p.round_num
                    WHERE p.scope = ? AND p.kind = ? ORDER BY p.rank LIMIT ?""", (scope, kind, limit))
     for r in rows:
         r["credit"] = pct(r["credit"])
-        r["prob_before"], r["prob_after"] = pct(r["prob_before"]), pct(r["prob_after"])
-        if r["prob_before"] is not None and not r["actor_attacking"]:  # killer's team's odds
-            r["prob_before"], r["prob_after"] = 100 - r["prob_before"], 100 - r["prob_after"]
         r["per_round"] = r["credit"] / r["rounds"] if r["rounds"] else None
     return rows
+
+
+def play_event_ids():
+    """Events with best-performance lists (those with replay data)."""
+    return {int(r["scope"][1:]) for r in _all("SELECT DISTINCT scope FROM plays WHERE scope LIKE 'e%'")}
 
 
 def leaderboard(scope, min_rounds):

@@ -1,24 +1,33 @@
 {% extends "vct/base.html" %}
 {% load vct_extras %}
-{% block title %}Best performances{% endblock %}
+{% block title %}Best performances: {{ title }}{% endblock %}
 {% block content %}
-<h2>Best performances: {{ scope_name }}</h2>
+<h2>Best performances: {{ title }}</h2>
 
 <nav class="tabs">
     {% for key, label in tabs %}
-    <a href="?view={{ key }}&scope={{ scope }}" class="{% if key == kind %}active{% endif %}">best {{ label }}</a>
-    {% endfor %}
-</nav>
-<nav class="tabs years">
-    {% for key, label in scopes %}
-    <a href="?view={{ kind }}&scope={{ key }}" class="{% if key == scope %}active{% endif %}">{{ label }}</a>
+    <a href="?view={{ key }}{% if event %}&event={{ event.event_id }}{% elif year %}&year={{ year }}{% endif %}" class="{% if key == kind %}active{% endif %}">best {{ label }}</a>
     {% endfor %}
 </nav>
 
+<form class="filters" method="get">
+    <input type="hidden" name="view" value="{{ kind }}">
+    <label>Year
+        <select name="year" onchange="this.form.event.value=''; this.form.submit()">
+            <option value="">All years</option>
+            {% for y in years %}<option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>{% endfor %}
+        </select>
+    </label>
+    <label>Tournament
+        <select name="event" onchange="this.form.submit()">
+            <option value="">All tournaments</option>
+            {% for e in events %}<option value="{{ e.event_id }}" {% if e.event_id == event.event_id %}selected{% endif %}>{{ e.name }}</option>{% endfor %}
+        </select>
+    </label>
+</form>
+
 {% if kind == "round" %}
 <p class="note">One player's total WPA in a single round, as % of a round win. Clutches and multi-kills from a losing position rank highest.</p>
-{% elif kind == "kill" %}
-<p class="note">The single kills that moved win probability the most: usually the last kill of a round the killer's team was losing. Odds are the killer's team's win probability before and after.</p>
 {% elif kind == "map" %}
 <p class="note">One player's total WPA over a single map, as % of a round win. +100 is worth one whole round to their team. Longer maps (overtime) give more chances, so WPA per round is shown too.</p>
 {% else %}
@@ -30,8 +39,7 @@
     <thead>
         <tr>
             <th class="num">#</th><th>Player</th><th class="num">WPA</th>
-            {% if kind == "kill" %}<th class="num">Odds</th><th>Weapon</th>
-            {% elif kind == "round" %}<th class="num">Kills</th>
+            {% if kind == "round" %}<th class="num">Kills</th>
             {% else %}<th class="num">Per round</th><th class="num">K&ndash;D</th><th class="num">Rating</th>{% endif %}
             <th>{% if kind == "match" %}Match{% elif kind == "map" %}Map{% else %}Round{% endif %}</th>
         </tr>
@@ -42,10 +50,7 @@
             <td class="num">{{ p.rank }}</td>
             <td class="nowrap"><a href="{% url 'vct:player' p.player_id %}">{{ p.player }}</a> <span class="muted">{{ p.team }}</span></td>
             <td class="num up">{{ p.credit|signed:0 }}</td>
-            {% if kind == "kill" %}
-                <td class="num nowrap">{{ p.prob_before|floatformat:0 }}&rarr;{{ p.prob_after|floatformat:0 }}</td>
-                <td>{{ p.weapon|default:"" }}</td>
-            {% elif kind == "round" %}
+            {% if kind == "round" %}
                 <td class="num">{{ p.kills }}</td>
             {% else %}
                 <td class="num">{{ p.per_round|signed:1 }}</td>
@@ -54,15 +59,17 @@
             {% endif %}
             <td>
                 {% if kind == "match" %}
-                    <a class="project-link" href="{% url 'vct:match' p.match_id %}">vs {{ p.opponent }}, {{ p.maps_won }}&ndash;{{ p.maps_lost }}</a>
+                    <a class="project-link" href="{% url 'vct:stats' %}?event={{ p.event_id }}&match={{ p.match_id }}">vs {{ p.opponent }}, {{ p.maps_won }}&ndash;{{ p.maps_lost }}</a>
                 {% elif kind == "map" %}
                     <a class="project-link" href="{% url 'vct:match' p.match_id %}">vs {{ p.opponent }}, {{ p.map_name }} {{ p.rounds_won }}&ndash;{{ p.rounds_lost }}</a>
                 {% else %}
                     <a class="project-link" href="{% url 'vct:round' p.game_id p.round_num %}">vs {{ p.opponent }}, {{ p.map_name }} round {{ p.round_num }}</a>
                 {% endif %}
-                <span class="muted">{{ p.event }}</span>
+                <span class="muted">{% if event %}{{ p.stage|default:"" }}{% else %}{{ p.event }}{% endif %}</span>
             </td>
         </tr>
+    {% empty %}
+        <tr><td colspan="6">Nothing here yet.</td></tr>
     {% endfor %}
     </tbody>
 </table>

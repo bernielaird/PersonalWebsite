@@ -109,8 +109,6 @@
     border: 1px solid var(--border);
 }
 
-.tabs.years a { font-size: 13px; padding: 3px 10px; border-color: transparent; }
-
 .tabs a.active,
 .tabs a.active:hover {
     border-color: var(--accent);

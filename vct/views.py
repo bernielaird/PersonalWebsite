@@ -52,19 +52,29 @@ def round_view(request, game_id, round_num):
     return _render(request, "round.html", {"r": r})
 
 
-PLAY_TABS = [("round", "rounds"), ("kill", "kills"), ("map", "maps"), ("match", "matches")]
+PLAY_TABS = [("round", "rounds"), ("map", "maps"), ("match", "matches")]
 
 
 def plays(request):
-    scopes = data.scopes()
+    """Best rounds, maps and matches for all years, a year or one tournament."""
+    years = data.years()
+    with_plays = data.play_event_ids()
+    events = [e for e in data.event_options() if e["event_id"] in with_plays]
     kind = request.GET.get("view", "round")
     if kind not in dict(PLAY_TABS):
         kind = "round"
-    scope = request.GET.get("scope", "all")
-    if scope not in dict(scopes):
-        scope = "all"
+    year = _int(request.GET.get("year"))
+    year = year if year in years else None
+    event = next((e for e in events if e["event_id"] == _int(request.GET.get("event"))), None)
+    if event and year and event["year"] != year:
+        event = None
+    if event:
+        year = event["year"]
+    scope = f"e{event['event_id']}" if event else (f"y{year}" if year else "all")
+    title = event["name"] if event else (str(year) if year else f"All years ({years[0]}–{years[-1]})")
     return _render(request, "plays.html", {
-        "tabs": PLAY_TABS, "kind": kind, "scopes": scopes, "scope": scope, "scope_name": dict(scopes)[scope],
+        "tabs": PLAY_TABS, "kind": kind, "years": list(reversed(years)), "year": year, "event": event,
+        "events": [e for e in events if not year or e["year"] == year], "title": title,
         "rows": data.plays(scope, kind, 100),
     })
 
