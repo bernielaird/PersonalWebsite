@@ -34,6 +34,7 @@
 </form>
 
 {% if match %}
+    <div style="{{ match.style }}">
     {% with s=match_stats %}
     <p>
         <a class="project-link" href="{% url 'vct:match' match.match_id %}">{{ match.team1 }} {{ match.team1_score }}&ndash;{{ match.team2_score }} {{ match.team2 }} &rarr; round by round</a>
@@ -93,6 +94,7 @@
     {% if not mp.has_replay %}<p class="note">No 2D replay for this map, so no WPA.</p>{% endif %}
     {% endfor %}
     {% endwith %}
+    </div>
 {% else %}
     <p class="note">
         Every player who played {% if event %}in this tournament{% elif year %}in {{ year }}{% else %}since {{ years|last }}{% endif %}{% if min_rounds %} with at least {{ min_rounds }} rounds{% endif %}.

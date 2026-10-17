@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from . import data
+from .colors import match_style
 
 FEATURED_ROUND = (280042, 23)  # Americas Stage 2 grand final, map 5 (Haven), round 23
 GITHUB = "https://github.com/bernielaird/vctstats"
@@ -103,6 +104,7 @@ def stats(request):
     context = {"years": list(reversed(years)), "year": year, "event": event, "match": match,
                "events": [e for e in events if not year or e["year"] == year], "matches": matches}
     if match:
+        match["style"] = match_style(match)
         context["match_stats"] = data.match_stats(match["match_id"])
         context["title"] = f"{match['team1']} vs {match['team2']}"
     else:

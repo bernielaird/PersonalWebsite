@@ -6,6 +6,8 @@ import sqlite3
 from contextlib import closing
 from pathlib import Path
 
+from .colors import match_style
+
 DB_PATH = Path(__file__).resolve().parent / "data" / "vct_site.sqlite"
 
 
@@ -55,6 +57,8 @@ def event(event_id):
 
 
 MATCH_SQL = """SELECT m.*, t1.name AS team1, t1.tag AS team1_tag, t2.name AS team2, t2.tag AS team2_tag,
+                      t1.primary_color AS team1_primary, t1.secondary_color AS team1_secondary,
+                      t2.primary_color AS team2_primary, t2.secondary_color AS team2_secondary,
                       e.name AS event
                FROM matches m JOIN teams t1 ON t1.team_id = m.team1_id JOIN teams t2 ON t2.team_id = m.team2_id
                JOIN events e USING (event_id)"""
@@ -68,6 +72,7 @@ def match(match_id):
     m = _one(MATCH_SQL + " WHERE m.match_id = ?", (match_id,))
     if not m:
         return None
+    m["style"] = match_style(m)
     m["maps"] = _all("SELECT * FROM maps WHERE match_id = ? ORDER BY map_number", (match_id,))
     for mp in m["maps"]:
         mp["rounds"] = _all("""SELECT round_num, winner_id, outcome, team1_score, team2_score,
