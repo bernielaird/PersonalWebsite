@@ -1,5 +1,15 @@
-@import url("https://db.onlinewebfonts.com/c/220eece2861e0a892f3bc87ad8029d0a?family=TSTAR+Mono+Round+W00+Regular");
 @import url("colors.css");
+
+/* Served from this site and preloaded in each page's <head>, so text appears in this font straight away
+   instead of flashing in a fallback font first. From onlinewebfonts.com (CC BY 4.0). */
+@font-face {
+    font-family: "TSTAR Mono Round W00 Regular";
+    src: url("../fonts/tstar-mono-round.woff2") format("woff2"),
+         url("../fonts/tstar-mono-round.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
 
 html, body {
     margin: 0;
