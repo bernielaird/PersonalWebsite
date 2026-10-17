@@ -4,8 +4,9 @@ Colors come from the teams table (primary_color, secondary_color; from vct-ratin
 """
 import colorsys
 
-DEFAULT_1, DEFAULT_2 = "#cf6d1d", "#4077d1"  # the site's orange and blue, for teams without colors
-NEUTRAL = "#6b6b70"                          # for teams whose colors are only black/white/grey
+# Fallbacks are always neutral greys (never a color that isn't the team's): for teams with only black/white,
+# teams without colors, and the second team in a clash. Several shades so two greys can still differ.
+NEUTRALS = ("#6b6b70", "#a8a8ad", "#3d3d42")
 BG_LIGHT, BG_DARK = "#f5f5f5", "#16161a"     # the page backgrounds (styles.css --bg)
 
 
@@ -35,10 +36,10 @@ def _mix(c, toward, t):
     return _hex(tuple(a + (b - a) * t for a, b in zip(_rgb(c), _rgb(toward))))
 
 
-def _neutral(c):
-    """Black, white or grey: invisible on one of the two themes, and says nothing about the team."""
+def _unusable(c):
+    """Near-black or near-white: invisible on one of the two themes. Mid greys are fine (e.g. G2)."""
     _, s, v = colorsys.rgb_to_hsv(*(x / 255 for x in _rgb(c)))
-    return s < 0.18 or v < 0.12
+    return v < 0.2 or (s < 0.12 and v > 0.85)
 
 
 def _distance(a, b):
@@ -48,7 +49,7 @@ def _distance(a, b):
 
 
 def _candidates(primary, secondary):
-    return [c for c in (primary, secondary) if c and not _neutral(c)]
+    return [c for c in (primary, secondary) if c and not _unusable(c)]
 
 
 def _readable(c, bg, toward):
@@ -62,13 +63,13 @@ def _readable(c, bg, toward):
 
 def pick(t1_primary, t1_secondary, t2_primary, t2_secondary):
     """(team1 color, team2 color), using secondaries when a primary is neutral or the two clash."""
-    c1s = _candidates(t1_primary, t1_secondary) or ([NEUTRAL] if t1_primary else [DEFAULT_1])
-    c2s = _candidates(t2_primary, t2_secondary) or ([NEUTRAL] if t2_primary else [DEFAULT_2])
+    c1s = _candidates(t1_primary, t1_secondary) or [NEUTRALS[0]]
+    c2s = _candidates(t2_primary, t2_secondary) or [NEUTRALS[0]]
     for c1, c2 in ((c1s[0], c2s[0]), *((c1s[0], c) for c in c2s[1:]), *((c, c2s[0]) for c in c1s[1:])):
         if _distance(c1, c2) >= 150:
             return c1, c2
     c1 = c1s[0]
-    return c1, (DEFAULT_2 if _distance(c1, DEFAULT_2) >= _distance(c1, DEFAULT_1) else DEFAULT_1)
+    return c1, max(NEUTRALS, key=lambda n: _distance(c1, n))  # still clashing: the most different grey
 
 
 def match_style(m):

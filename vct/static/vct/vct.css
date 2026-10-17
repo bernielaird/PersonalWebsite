@@ -121,8 +121,7 @@
 
 /* Match stats and round squares: each team gets a color (edge, tint, tag). Defaults here; real team
    colors come from colors.py as inline CSS variables on the match wrapper. */
-.vct-content { --team1: #cf6d1d; --team2: #4077d1; }
-:root[data-theme="dark"] .vct-content { --team1: #df8d51; --team2: #7ea3e0; }
+.vct-content { --team1: #6b6b70; --team2: #a8a8ad; }
 
 .vct-table tr.team1 td:first-child { box-shadow: inset 4px 0 0 var(--team1); padding-left: 12px; }
 .vct-table tr.team2 td:first-child { box-shadow: inset 4px 0 0 var(--team2); padding-left: 12px; }
