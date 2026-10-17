@@ -1,0 +1,70 @@
+{% extends "vct/base.html" %}
+{% load vct_extras %}
+{% block title %}Best performances{% endblock %}
+{% block content %}
+<h2>Best performances: {{ scope_name }}</h2>
+
+<nav class="tabs">
+    {% for key, label in tabs %}
+    <a href="?view={{ key }}&scope={{ scope }}" class="{% if key == kind %}active{% endif %}">best {{ label }}</a>
+    {% endfor %}
+</nav>
+<nav class="tabs years">
+    {% for key, label in scopes %}
+    <a href="?view={{ kind }}&scope={{ key }}" class="{% if key == scope %}active{% endif %}">{{ label }}</a>
+    {% endfor %}
+</nav>
+
+{% if kind == "round" %}
+<p class="note">One player's total WPA in a single round, as % of a round win. Clutches and multi-kills from a losing position rank highest.</p>
+{% elif kind == "kill" %}
+<p class="note">The single kills that moved win probability the most: usually the last kill of a round the killer's team was losing. Odds are the killer's team's win probability before and after.</p>
+{% elif kind == "map" %}
+<p class="note">One player's total WPA over a single map, as % of a round win. +100 is worth one whole round to their team. Longer maps (overtime) give more chances, so WPA per round is shown too.</p>
+{% else %}
+<p class="note">One player's total WPA over a whole match (every map with replay data). Best-of-fives give more rounds, so WPA per round is shown too.</p>
+{% endif %}
+
+<div class="table-scroll">
+<table class="vct-table">
+    <thead>
+        <tr>
+            <th class="num">#</th><th>Player</th><th class="num">WPA</th>
+            {% if kind == "kill" %}<th class="num">Odds</th><th>Weapon</th>
+            {% elif kind == "round" %}<th class="num">Kills</th>
+            {% else %}<th class="num">Per round</th><th class="num">K&ndash;D</th><th class="num">Rating</th>{% endif %}
+            <th>{% if kind == "match" %}Match{% elif kind == "map" %}Map{% else %}Round{% endif %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for p in rows %}
+        <tr>
+            <td class="num">{{ p.rank }}</td>
+            <td class="nowrap">{{ p.player }} <span class="muted">{{ p.team }}</span></td>
+            <td class="num up">{{ p.credit|signed:0 }}</td>
+            {% if kind == "kill" %}
+                <td class="num nowrap">{{ p.prob_before|floatformat:0 }}&rarr;{{ p.prob_after|floatformat:0 }}</td>
+                <td>{{ p.weapon|default:"" }}</td>
+            {% elif kind == "round" %}
+                <td class="num">{{ p.kills }}</td>
+            {% else %}
+                <td class="num">{{ p.per_round|signed:1 }}</td>
+                <td class="num nowrap">{{ p.kills }}&ndash;{{ p.deaths }}</td>
+                <td class="num">{{ p.rating|floatformat:2 }}</td>
+            {% endif %}
+            <td>
+                {% if kind == "match" %}
+                    <a class="project-link" href="{% url 'vct:match' p.match_id %}">vs {{ p.opponent }}, {{ p.maps_won }}&ndash;{{ p.maps_lost }}</a>
+                {% elif kind == "map" %}
+                    <a class="project-link" href="{% url 'vct:match' p.match_id %}">vs {{ p.opponent }}, {{ p.map_name }} {{ p.rounds_won }}&ndash;{{ p.rounds_lost }}</a>
+                {% else %}
+                    <a class="project-link" href="{% url 'vct:round' p.game_id p.round_num %}">vs {{ p.opponent }}, {{ p.map_name }} round {{ p.round_num }}</a>
+                {% endif %}
+                <span class="muted">{{ p.event }}</span>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

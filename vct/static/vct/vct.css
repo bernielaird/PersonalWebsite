@@ -1,0 +1,204 @@
+/* /vct/ pages. Same column, font and colors as the rest of the site. */
+
+.vct-content {
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 10px;
+    font-size: 16px;
+    color: #222;
+}
+
+.vct-nav {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.vct-nav a { color: #8e4909; }
+.vct-nav a:hover { color: #a9682b; }
+
+.vct-content h2 {
+    font-size: 22px;
+    margin: 36px 0 12px;
+}
+
+.lead { font-size: 18px; line-height: 1.5; }
+.note { font-size: 14px; color: #666; line-height: 1.5; }
+.muted { color: #888; }
+.nowrap { white-space: nowrap; }
+.winner { font-weight: bold; }
+.up { color: #8e4909; }
+.down { color: #555; }
+
+.steps li { margin-bottom: 8px; line-height: 1.5; }
+
+/* Headline numbers */
+.stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 24px 0;
+}
+
+.stat {
+    border: 1px solid #ddd;
+    padding: 12px 14px;
+}
+
+.stat-value { font-size: 24px; color: #8e4909; }
+.stat-label { font-size: 13px; color: #666; margin-top: 4px; }
+
+/* Tables */
+.table-scroll { overflow-x: auto; }
+
+.vct-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 14px;
+}
+
+.vct-table th,
+.vct-table td {
+    text-align: left;
+    padding: 7px 8px;
+    border-bottom: 1px solid #e3e3e3;
+    vertical-align: top;
+}
+
+.vct-table th {
+    font-weight: normal;
+    color: #666;
+    border-bottom: 1px solid #bbb;
+}
+
+.vct-table .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.vct-table tbody tr:hover { background: #ececec; }
+
+/* Tabs on the best performances page */
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 4px;
+}
+
+.tabs a {
+    font-size: 14px;
+    padding: 5px 12px;
+    border: 1px solid #ddd;
+}
+
+.tabs.years a { font-size: 13px; padding: 3px 10px; border-color: transparent; }
+
+.tabs a.active,
+.tabs a.active:hover {
+    border-color: #8e4909;
+    color: #8e4909;
+}
+
+/* Events grouped by year on the overview */
+.year-group { margin: 10px 0; }
+.year-group summary { cursor: pointer; font-size: 18px; padding: 6px 0; }
+
+/* Round strip */
+.map-block { margin: 22px 0; }
+
+.map-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.sq {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+}
+
+.legend .sq { width: 14px; height: 14px; vertical-align: middle; margin: 0 4px 0 12px; }
+.legend .sq:first-child { margin-left: 0; }
+
+.sq.w1 { background: #cf6d1d; color: #fff; }
+.sq.w2 { background: #5a5a5d; color: #fff; }
+.sq.off { opacity: 0.35; }
+
+a.sq.w1:link, a.sq.w1:visited, a.sq.w2:link, a.sq.w2:visited { color: #fff; }
+a.sq:hover { border-color: #111; color: #fff; }
+
+/* Round page */
+.round-nav {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+}
+
+.chart-box {
+    position: relative;
+    height: 320px;
+    margin: 12px 0 20px;
+}
+
+/* Player filters */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: end;
+    margin: 12px 0;
+}
+
+.filters label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    color: #666;
+}
+
+.filters select,
+.filters input {
+    padding: 6px 8px;
+    border: 1px solid #999;
+    background: white;
+    font: inherit;
+    font-size: 14px;
+    max-width: 100%;
+}
+
+.filters input { width: 90px; }
+
+.filters button {
+    padding: 7px 14px;
+    border: 1px solid #111;
+    background: #111;
+    color: white;
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+}
+
+@media (max-width: 900px) {
+    .vct-content {
+        width: auto;
+        margin: 10px 16px 0;
+    }
+}

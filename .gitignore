@@ -23,3 +23,6 @@ db.sqlite3
 Thumbs.db
 
 staticfiles/
+# VCT data: downloaded at build time by vct/fetch_data.py, never committed
+vct/data/*.sqlite
+vct/data/*.download

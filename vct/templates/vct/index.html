@@ -1,0 +1,58 @@
+{% extends "vct/base.html" %}
+{% block content %}
+<p class="lead">
+    After every kill and spike plant in pro Valorant, a model estimates each team's chance of winning
+    the round. Each change is credited to the players who caused it: <span class="underline">win probability added</span> (WPA).
+</p>
+
+<div class="stat-row">
+    <div class="stat"><div class="stat-value">{{ meta.matches }}</div><div class="stat-label">matches, {{ first_year }}&ndash;{{ last_year }}</div></div>
+    <div class="stat"><div class="stat-value">{{ meta.rounds }}</div><div class="stat-label">rounds</div></div>
+    <div class="stat"><div class="stat-value">{{ meta.actions }}</div><div class="stat-label">kills, plants, defuses</div></div>
+    <div class="stat"><div class="stat-value">77.3%</div><div class="stat-label">accuracy on an unseen season</div></div>
+</div>
+
+<h2>Start here</h2>
+<p>
+    <a class="project-link" href="{% url 'vct:round' featured.0 featured.1 %}">One round, kill by kill &rarr;</a><br>
+    The Americas Stage 2 grand final, map 5, round 23: LOUD's lukxo turns a 100 Thieves attack into a 0% round with four kills.
+</p>
+
+<h2>How it works</h2>
+<ol class="steps">
+    <li><b>Scrape.</b> A Java scraper collects every VCT match since 2023 from vlr.gg, including each map's 2D replay data (1,890 matches, ~4 GB).</li>
+    <li><b>Clean.</b> The pages become a validated SQLite database: rounds, buys, ~600k kills, plants and defuses, 3.7M player positions.</li>
+    <li><b>Model.</b> A calibrated LightGBM model predicts the round winner from players alive, time, spike state and economy. Trained on 2023&ndash;2025, tested on all of 2026.</li>
+    <li><b>Credit.</b> Each kill's change in win probability goes to the killer and victim. Deaths that are traded within 5 seconds cost half as much.</li>
+    <li><b>Validate.</b> WPA tracks vlr.gg's rating closely (0.90) but doesn't predict future maps better, so it's a description of what happened, not a better skill rating.</li>
+</ol>
+
+<table class="vct-table">
+    <thead><tr><th>Model</th><th class="num">Log loss</th><th class="num">Accuracy</th><th class="num">AUC</th></tr></thead>
+    <tbody>
+        <tr><td>Lookup table (players alive + spike)</td><td class="num">0.477</td><td class="num">74.9%</td><td class="num">0.844</td></tr>
+        <tr><td>Logistic regression</td><td class="num">0.457</td><td class="num">77.0%</td><td class="num">0.862</td></tr>
+        <tr><td><b>LightGBM</b></td><td class="num"><b>0.448</b></td><td class="num"><b>77.3%</b></td><td class="num"><b>0.867</b></td></tr>
+    </tbody>
+</table>
+
+<h2>Events</h2>
+{% for year, events in events_by_year %}
+<details class="year-group" {% if forloop.first %}open{% endif %}>
+    <summary>{{ year }} <span class="muted">&middot; {{ events|length }} events</span></summary>
+    <table class="vct-table">
+        <thead><tr><th>Event</th><th>Region</th><th class="num">Matches</th></tr></thead>
+        <tbody>
+        {% for e in events %}
+            <tr>
+                <td><a class="project-link" href="{% url 'vct:event' e.event_id %}">{{ e.name }}</a></td>
+                <td>{{ e.region }}</td>
+                <td class="num">{{ e.matches }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</details>
+{% endfor %}
+<p class="note">China has no 2D replays on vlr.gg, so its matches have scores but no win probability. Data built {{ meta.built }}.</p>
+{% endblock %}

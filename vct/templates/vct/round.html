@@ -1,0 +1,127 @@
+{% extends "vct/base.html" %}
+{% load vct_extras %}
+{% block title %}Round {{ r.round_num }}: {{ r.match.team1 }} vs {{ r.match.team2 }}{% endblock %}
+{% block content %}
+<p class="note">
+    <a class="project-link" href="{% url 'vct:event' r.match.event_id %}">{{ r.match.event }}</a> &middot;
+    {{ r.match.stage|default:"" }} &middot;
+    <a class="project-link" href="{% url 'vct:match' r.match_id %}">{{ r.match.team1 }} vs {{ r.match.team2 }}</a>
+</p>
+<h2>Map {{ r.map_number }} ({{ r.map_name }}), round {{ r.round_num }}</h2>
+<p>
+    <b>{{ r.attacker_tag }}</b> attacking, <b>{{ r.defender_tag }}</b> defending.
+    {{ r.winner_tag }} won the round ({{ r.outcome }}).
+    {% if r.start_prob is not None %}At round start, the model gave {{ r.attacker_tag }} {{ r.start_prob|pct }}.{% endif %}
+</p>
+
+<div class="round-nav">
+    {% if r.prev %}<a class="project-link" href="{% url 'vct:round' r.game_id r.prev %}">&larr; round {{ r.prev }}</a>{% else %}<span></span>{% endif %}
+    {% if r.next %}<a class="project-link" href="{% url 'vct:round' r.game_id r.next %}">round {{ r.next }} &rarr;</a>{% endif %}
+</div>
+
+{% if r.actions %}
+<div class="chart-box">
+    <canvas id="wp-chart" aria-label="{{ r.attacker_tag }} win probability over the round" role="img"></canvas>
+</div>
+
+<table class="vct-table">
+    <thead>
+        <tr>
+            <th>Time</th><th>Event</th>
+            <th class="num">{{ r.attacker_tag }} win prob</th>
+            <th class="num">Change</th>
+            <th class="num" title="WPA after the trade adjustment, in % of a round win">Credit (actor / victim)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if r.start_prob is not None %}
+        <tr><td>0:00</td><td>Round start, 5v5</td><td class="num">{{ r.start_prob|pct }}</td><td></td><td></td></tr>
+        {% endif %}
+        {% for a in r.actions %}
+        <tr>
+            <td class="nowrap">{{ a.clock }}</td>
+            <td>{{ a.text }}{% if a.tag %}<span class="muted">: {{ a.tag }}</span>{% endif %}</td>
+            <td class="num">{{ a.prob_after|pct }}</td>
+            <td class="num {% if a.change > 0 %}up{% elif a.change < 0 %}down{% endif %}">{{ a.change|signed }}</td>
+            <td class="num nowrap">
+                {% if a.actor_credit is not None %}{{ a.actor_credit|signed }}{% endif %}
+                {% if a.actor_credit is not None and a.victim_credit is not None %} / {% endif %}
+                {% if a.victim_credit is not None %}{{ a.victim_credit|signed }}{% endif %}
+                {% if a.actor_credit is None and a.victim_credit is None %}<span class="muted">team</span>{% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p class="note">
+    Change is from {{ r.attacker_tag }}'s point of view. Credit is what each player gets: the killer gains, the victim loses.
+    A death traded within 5 seconds gives half its cost back from the trader. Plants and defuses count as team actions, so no one gets credit for them.
+    Between actions the odds also drift with the clock; nobody is credited for that.
+</p>
+{{ r.points|json_script:"wp-points" }}
+{% else %}
+<p>No replay data for this round.</p>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if r.actions %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function () {
+    const points = JSON.parse(document.getElementById("wp-points").textContent);
+    const css = getComputedStyle(document.body);
+    Chart.defaults.font.family = css.fontFamily;
+    Chart.defaults.color = "#444";
+    const mmss = s => Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+    new Chart(document.getElementById("wp-chart"), {
+        type: "line",
+        data: {
+            datasets: [{
+                data: points,
+                borderColor: "#cf6d1d",
+                backgroundColor: "#cf6d1d",
+                borderWidth: 2,
+                tension: 0,
+                pointRadius: ctx => (ctx.raw && ctx.raw.label ? 3.5 : 0),
+                pointHoverRadius: ctx => (ctx.raw && ctx.raw.label ? 6 : 0),
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            parsing: false,
+            animation: false,
+            interaction: { mode: "nearest", intersect: false, axis: "x" },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    filter: item => !!item.raw.label,
+                    displayColors: false,
+                    callbacks: {
+                        title: items => mmss(items[0].raw.x),
+                        label: item => [item.raw.label, "{{ r.attacker_tag|escapejs }} " + item.raw.y.toFixed(1) + "%"],
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    type: "linear",
+                    min: 0,
+                    title: { display: true, text: "time into round" },
+                    ticks: { callback: v => mmss(v), stepSize: 15 },
+                    grid: { color: "#e6e6e6" },
+                },
+                y: {
+                    min: 0, max: 100,
+                    title: { display: true, text: "{{ r.attacker_tag|escapejs }} win probability" },
+                    ticks: { callback: v => v + "%", stepSize: 25 },
+                    grid: { color: ctx => (ctx.tick.value === 50 ? "#bbb" : "#e6e6e6") },
+                },
+            },
+        },
+    });
+})();
+</script>
+{% endif %}
+{% endblock %}

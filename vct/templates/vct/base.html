@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{% static 'mainsite/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'vct/vct.css' %}">
+    <link rel="icon" href="{% static 'images/foxv1.png' %}" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VCT win probability{% endblock %}</title>
+</head>
+<body class="page-layout">
+    <header>
+        <div class="title">
+            <h1>{% block heading %}vct win probability{% endblock %}</h1>
+        </div>
+    </header>
+
+    <main>
+        <div class="vct-content">
+            <nav class="vct-nav">
+                <a href="{% url 'vct:index' %}">overview</a>
+                <a href="{% url 'vct:plays' %}">best performances</a>
+                <a href="{% url 'vct:players' %}">players</a>
+                <a href="{{ github }}" target="_blank">github</a>
+            </nav>
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    <footer class="bottom-bar">
+        <div class="bottom-left">
+            <a href="/" class="name">bernie</a>
+            <a href="/about/">about</a>
+            <a href="/projects">projects</a>
+            <a href="/contact/">contact</a>
+        </div>
+    </footer>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

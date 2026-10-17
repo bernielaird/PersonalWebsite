@@ -1,0 +1,34 @@
+{% extends "vct/base.html" %}
+{% block title %}{{ match.team1 }} vs {{ match.team2 }}{% endblock %}
+{% block content %}
+<p class="note"><a class="project-link" href="{% url 'vct:event' match.event_id %}">{{ match.event }}</a> &middot; {{ match.stage|default:"" }} &middot; {{ match.start_time|slice:":10" }}</p>
+<h2>{{ match.team1 }} {{ match.team1_score }}&ndash;{{ match.team2_score }} {{ match.team2 }}</h2>
+
+<p class="legend">
+    <span class="sq w1"></span> {{ match.team1_tag|default:match.team1 }} won the round
+    <span class="sq w2"></span> {{ match.team2_tag|default:match.team2 }} won the round
+</p>
+
+{% for mp in match.maps %}
+<div class="map-block">
+    <div class="map-head">
+        <b>Map {{ mp.map_number }}: {{ mp.map_name|default:"?" }}</b>
+        <span class="nowrap">{{ mp.team1_score }}&ndash;{{ mp.team2_score }}</span>
+    </div>
+    <div class="strip">
+        {% for r in mp.rounds %}
+            {% if r.has_trace %}
+                <a class="sq {% if r.winner_id == match.team1_id %}w1{% else %}w2{% endif %}"
+                   href="{% url 'vct:round' mp.game_id r.round_num %}"
+                   title="Round {{ r.round_num }}: {{ r.team1_score }}-{{ r.team2_score }} ({{ r.outcome }})">{{ r.round_num }}</a>
+            {% else %}
+                <span class="sq {% if r.winner_id == match.team1_id %}w1{% else %}w2{% endif %} off"
+                      title="Round {{ r.round_num }}: no replay data">{{ r.round_num }}</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if not mp.has_replay %}<p class="note">No 2D replay for this map, so no win probability.</p>{% endif %}
+</div>
+{% endfor %}
+<p class="note">Pick a round to see how each kill moved the odds.</p>
+{% endblock %}

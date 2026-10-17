@@ -1,0 +1,63 @@
+{% extends "vct/base.html" %}
+{% load vct_extras %}
+{% block title %}Players: {{ scope_name }}{% endblock %}
+{% block content %}
+<h2>Players: {{ scope_name }}</h2>
+
+<form class="filters" method="get">
+    <label>Years or event
+        <select name="scope" onchange="this.form.min.value=''; this.form.submit()">
+            <optgroup label="Years">
+                {% for key, label in scopes %}
+                <option value="{{ key }}" {% if scope == key %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </optgroup>
+            {% for year, events in events_by_year %}
+            <optgroup label="{{ year }} events">
+                {% for e in events %}
+                <option value="{{ e.scope }}" {% if scope == e.scope %}selected{% endif %}>{{ e.name }}</option>
+                {% endfor %}
+            </optgroup>
+            {% endfor %}
+        </select>
+    </label>
+    <label>Min rounds
+        <input type="number" name="min" value="{{ min_rounds }}" min="0" step="50">
+    </label>
+    <button type="submit">show</button>
+</form>
+
+<p class="note">
+    Net WPA per round played, as % of a round win. "Shrunk" pulls small samples toward the average, so it's the best single
+    estimate and the sort order. The range is a 95% interval for the raw net value.
+</p>
+
+<div class="table-scroll">
+<table class="vct-table">
+    <thead>
+        <tr>
+            <th class="num">#</th><th>Player</th><th>Team</th><th class="num">Rounds</th>
+            <th class="num">vlr rating</th><th class="num">Shrunk WPA</th><th class="num">95% range</th>
+            <th class="num">Gained</th><th class="num">Lost</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for p in rows %}
+        <tr>
+            <td class="num">{{ forloop.counter }}</td>
+            <td class="nowrap">{{ p.player }}</td>
+            <td>{{ p.team|default:"" }}</td>
+            <td class="num">{{ p.wpa_rounds }}</td>
+            <td class="num">{{ p.rating|floatformat:2 }}</td>
+            <td class="num"><b>{{ p.shrunk|signed:2 }}</b></td>
+            <td class="num nowrap muted">{{ p.low|floatformat:1 }} to {{ p.high|floatformat:1 }}</td>
+            <td class="num">{{ p.gained|floatformat:1 }}</td>
+            <td class="num">{{ p.lost|floatformat:1 }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="9">No players with that many rounds. Try a lower minimum.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}
