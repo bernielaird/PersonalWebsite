@@ -20,5 +20,6 @@ from django.urls import include, path
 urlpatterns = [
     path("", include("mainsite.urls")),
     path("vct/", include("vct.urls")),
+    path("musicelo/", include("songs.urls")),  # from the MusicElo repo (installed package)
     path("admin/", admin.site.urls),
 ]
