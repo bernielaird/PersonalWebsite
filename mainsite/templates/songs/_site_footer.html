@@ -1,0 +1,39 @@
+{% comment %}
+The site's bottom bar on MusicElo's pages. MusicElo (installed from its own repo) includes
+"songs/_site_footer.html", which is empty in the package; this file overrides it because mainsite
+comes before songs in INSTALLED_APPS. MusicElo's stylesheet uses the same color names as styles.css,
+so the bar matches in both themes.
+{% endcomment %}
+<footer class="bottom-bar">
+    <div class="bottom-left">
+        <a href="/" class="name">bernie</a>
+        <a href="/about/">about</a>
+        <a href="/projects/">projects</a>
+        <a href="/vct/">vct</a>
+        <a href="/contact/">contact</a>
+    </div>
+</footer>
+<style>
+    .bottom-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 28px 56px;
+        border-top: 1px solid var(--border);
+        background-color: var(--bg);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
+        box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.15), 0 -3px 18px rgba(0, 0, 0, 0.12), 0 -6px 40px rgba(0, 0, 0, 0.10);
+        z-index: 1000;
+    }
+    .bottom-left { display: flex; gap: 20px; font-size: 22px; }
+    .bottom-bar a.name { color: var(--accent); }
+    .bottom-bar a.name:hover { color: var(--accent-hover); }
+    @media (max-width: 600px) {
+        .bottom-bar { padding: 16px 20px; }
+        .bottom-left { font-size: 16px; gap: 12px; flex-wrap: wrap; }
+    }
+</style>
