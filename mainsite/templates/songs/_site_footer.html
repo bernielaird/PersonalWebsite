@@ -6,11 +6,11 @@ so the bar matches in both themes.
 {% endcomment %}
 <footer class="bottom-bar">
     <div class="bottom-left">
-        <a href="/" class="name">bernie</a>
+        <a href="/">home</a>
         <a href="/about/">about</a>
         <a href="/projects/">projects</a>
         <a href="/vct/">vct</a>
-        <a href="/musicelo/">musicelo</a>
+        <a href="/musicelo/" class="active" aria-current="page">musicelo</a>
         <a href="/contact/">contact</a>
     </div>
 </footer>
@@ -31,8 +31,10 @@ so the bar matches in both themes.
         z-index: 1000;
     }
     .bottom-left { display: flex; gap: 20px; font-size: 22px; }
-    .bottom-bar a.name { color: var(--accent); }
-    .bottom-bar a.name:hover { color: var(--accent-hover); }
+    :root { --nav-active: #d77d38; }
+    :root[data-theme="dark"] { --nav-active: #e69d69; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --nav-active: #e69d69; } }
+    .bottom-left a.active, .bottom-left a.active:hover { color: var(--nav-active); }
     @media (max-width: 600px) {
         .bottom-bar { padding: 16px 20px; }
         .bottom-left { font-size: 16px; gap: 12px; flex-wrap: wrap; }

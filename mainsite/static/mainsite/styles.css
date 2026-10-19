@@ -27,6 +27,7 @@
     --accent: #8e4909;
     --accent-name: #b95900;
     --accent-hover: #a9682b;
+    --nav-active: #d77d38;
     --chart-line: #cf6d1d;
     --chart-grid: #e6e6e6;
     --loss: #5a5a5d;
@@ -52,6 +53,8 @@
         --accent: #e69d69;
         --accent-name: #df8d51;
         --accent-hover: #f2bd99;
+    --nav-active: #e69d69;
+        --nav-active: #e69d69;
         --chart-line: #df8d51;
         --chart-grid: #2c2c32;
         --loss: #6a6a6e;
@@ -199,6 +202,12 @@ a.name:hover {
     display: flex;
     gap: 20px;
     font-size: 22px;
+}
+
+/* The page you're on, in light orange */
+.bottom-left a.active,
+.bottom-left a.active:hover {
+    color: var(--nav-active);
 }
 
 .bottom-right {
