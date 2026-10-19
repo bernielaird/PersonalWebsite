@@ -1,0 +1,9 @@
+# Everything is open to crawlers except:
+# - the admin and MusicElo's account pages (behind a login anyway; the MusicElo landing page stays open)
+# - VCT round pages: about 100,000 of them, which a crawler would spend hours on. Matches, players and
+#   stats stay crawlable.
+User-agent: *
+Disallow: /admin/
+Allow: /musicelo/$
+Disallow: /musicelo/
+Disallow: /vct/round/
