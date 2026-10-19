@@ -138,9 +138,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# Manifest storage puts a hash of each file's contents in its name (styles.3f9a1c.css), so a deploy that
+# changes a stylesheet changes its URL and browsers can't keep using a stale copy. Needs collectstatic
+# (the Render build runs it); with DEBUG=True the plain names are used.
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
-    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
 }
 
 STATIC_URL = "/static/"
