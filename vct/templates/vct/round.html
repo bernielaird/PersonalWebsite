@@ -16,9 +16,10 @@
 
 {% if r.calc_links %}
 <div class="calc-cta">
-    <div class="calc-cta-title"><b>Was it the right buy?</b> Open this round in the buy calculator:</div>
+    <div class="calc-cta-title">buy calculator:</div>
     {% for c in r.calc_links %}
-    <a class="calc-button" href="{% url 'vct:calculator' %}?{{ c.query }}">{{ c.tag }}: {{ c.bought }} with {{ c.bank }} credits &rarr;</a>
+    <div><a class="project-link" href="{% url 'vct:calculator' %}?{{ c.query }}">{{ c.tag }}</a>
+        <span class="muted">{{ c.bought }} with {{ c.bank }} credits</span></div>
     {% endfor %}
 </div>
 {% endif %}
