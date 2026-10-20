@@ -11,7 +11,8 @@
     const LABELS = { eco: "save (eco)", half: "half buy", force: "force", full: "full buy", bonus: "bonus" };
     const ORDER = ["round", "map", "if_win", "if_lose"];  // table column order, as stat indexes below
     const COL = { map: 0, round: 1, if_win: 2, if_lose: 3 };
-    const TOO_CLOSE = 2;  // points: about the simulation noise
+    // Points: about the simulation noise of a map figure (95%), at least 2.
+    const TOO_CLOSE = Math.max(2, 196 * Math.sqrt(0.25 / (window.CALC_MAPS || 2000)));
     const cache = new Map();
     // Opened from a round page: what the team actually bought, marked while the inputs are unchanged.
     const actual = new URLSearchParams(location.search).get("actual");

@@ -82,7 +82,7 @@
 {% if meta %}
 {{ levels|json_script:"calc-levels" }}
 {{ options|json_script:"calc-options" }}
-<script>window.CALC_URL = "{% url 'vct:calculator_data' %}";</script>
+<script>window.CALC_URL = "{% url 'vct:calculator_data' %}"; window.CALC_MAPS = {{ meta.maps_per_option|default:2000 }};</script>
 <script src="{% static 'vct/calculator.js' %}"></script>
 {% endif %}
 {% endblock %}
