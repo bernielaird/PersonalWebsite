@@ -88,6 +88,15 @@
     Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
     Chart.defaults.color = color("--text-soft");
     const mmss = s => Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+    // Zoom the y axis to the round: the range it covered, padded to 10s and at least 30 points tall.
+    const ys = points.map(p => p.y);
+    let yMin = Math.max(0, Math.floor((Math.min(...ys) - 5) / 10) * 10);
+    let yMax = Math.min(100, Math.ceil((Math.max(...ys) + 5) / 10) * 10);
+    while (yMax - yMin < 30) {
+        if (yMax < 100) yMax += 10;
+        if (yMax - yMin < 30 && yMin > 0) yMin -= 10;
+    }
+    const yStep = yMax - yMin > 60 ? 25 : (yMax - yMin > 30 ? 10 : 5);
     const chart = new Chart(document.getElementById("wp-chart"), {
         type: "line",
         data: {
@@ -127,9 +136,9 @@
                     grid: { color: () => color("--chart-grid") },
                 },
                 y: {
-                    min: 0, max: 100,
+                    min: yMin, max: yMax,
                     title: { display: true, text: "{{ r.attacker_tag|escapejs }} win probability" },
-                    ticks: { callback: v => v + "%", stepSize: 25 },
+                    ticks: { callback: v => v + "%", stepSize: yStep },
                     grid: { color: ctx => color(ctx.tick.value === 50 ? "--border-strong" : "--chart-grid") },
                 },
             },

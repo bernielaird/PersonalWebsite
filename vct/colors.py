@@ -48,6 +48,13 @@ def _distance(a, b):
     return ((2 + rm / 256) * (r1 - r2) ** 2 + 4 * (g1 - g2) ** 2 + (2 + (255 - rm) / 256) * (b1 - b2) ** 2) ** 0.5
 
 
+def _same_family(a, b):
+    """Two saturated colors of about the same hue (blue and navy, red and dark red): they read as one color."""
+    (h1, s1, _), (h2, s2, _) = (colorsys.rgb_to_hsv(*(x / 255 for x in _rgb(c))) for c in (a, b))
+    gap = abs(h1 - h2) * 360
+    return s1 > 0.25 and s2 > 0.25 and min(gap, 360 - gap) < 30
+
+
 def _candidates(primary, secondary):
     return [c for c in (primary, secondary) if c and not _unusable(c)]
 
@@ -62,12 +69,18 @@ def _readable(c, bg, toward):
 
 
 def pick(t1_primary, t1_secondary, t2_primary, t2_secondary):
-    """(team1 color, team2 color), using secondaries when a primary is neutral or the two clash."""
+    """(team1 color, team2 color), using secondaries when a primary is neutral or the two clash. Two colors
+    from the same family (both blue) clash too: then one team uses its secondary, a different family if possible."""
     c1s = _candidates(t1_primary, t1_secondary) or [NEUTRALS[0]]
     c2s = _candidates(t2_primary, t2_secondary) or [NEUTRALS[0]]
-    for c1, c2 in ((c1s[0], c2s[0]), *((c1s[0], c) for c in c2s[1:]), *((c, c2s[0]) for c in c1s[1:])):
-        if _distance(c1, c2) >= 150:
-            return c1, c2
+    one_secondary = [*((c1s[0], c) for c in c2s[1:]), *((c, c2s[0]) for c in c1s[1:])]
+    both_secondary = [(a, b) for a in c1s[1:] for b in c2s[1:]]
+    tries = ([(c1s[0], c2s[0])] + one_secondary + both_secondary,  # a different family, primaries first
+             one_secondary)                                       # same family, but one team on its secondary
+    for k, pairs in enumerate(tries):
+        for c1, c2 in pairs:
+            if _distance(c1, c2) >= 150 and (k == 1 or not _same_family(c1, c2)):
+                return c1, c2
     c1 = c1s[0]
     return c1, max(NEUTRALS, key=lambda n: _distance(c1, n))  # still clashing: the most different grey
 
