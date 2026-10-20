@@ -7,7 +7,7 @@
     {{ r.match.stage|default:"" }} &middot;
     <a class="project-link" href="{% url 'vct:match' r.match_id %}">{{ r.match.team1 }} vs {{ r.match.team2 }}</a>
 </p>
-<h2>Map {{ r.map_number }} ({{ r.map_name }}), round {{ r.round_num }}</h2>
+<h2><a class="map-link" href="{% url 'vct:match' r.match_id %}#map-{{ r.game_id }}">Map {{ r.map_number }} ({{ r.map_name }})</a>, round {{ r.round_num }}</h2>
 <p>
     <b>{{ r.attacker_tag }}</b> attacking, <b>{{ r.defender_tag }}</b> defending.
     {{ r.winner_tag }} won the round ({{ r.outcome }}).

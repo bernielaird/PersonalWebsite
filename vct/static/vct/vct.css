@@ -306,3 +306,8 @@ a.sq:hover { border-color: var(--text); }
 .calc-example-sub { font-size: 13px; color: var(--muted); }
 .vct-content a.calc-example-link { align-self: flex-end; font-size: 13px; margin-top: 6px; color: var(--accent); }
 .vct-content a.calc-example-link:hover { color: var(--accent-hover); }
+
+/* Round page: the map name links back to that map on the match page */
+.vct-content h2 a.map-link { color: inherit; text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 4px; }
+.vct-content h2 a.map-link:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.map-block { scroll-margin-top: 20px; }

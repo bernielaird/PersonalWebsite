@@ -38,7 +38,7 @@
 </div>
 
 {% for mp in match.maps %}
-<div class="map-block">
+<div class="map-block" id="map-{{ mp.game_id }}">
     <div class="map-head">
         <h3>Map {{ mp.map_number }}: {{ mp.map_name|default:"?" }}</h3>
         <span class="nowrap">{{ mp.team1_score }}&ndash;{{ mp.team2_score }}</span>
