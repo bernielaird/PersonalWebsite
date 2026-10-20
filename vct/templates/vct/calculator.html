@@ -1,0 +1,77 @@
+{% extends "vct/base.html" %}
+{% load static %}
+{% block title %}Buy calculator{% endblock %}
+{% block content %}
+<h2>Buy calculator</h2>
+<p class="note">
+    Should you save, half buy, force or full buy? Pick the spot and see each buy's chance of winning the round
+    and the map, from {{ meta.maps_per_option|default:"thousands of" }} simulated rest-of-maps per option.
+</p>
+
+{% if not meta %}
+<p>The calculator's data isn't in this build yet.</p>
+{% else %}
+<form class="filters calc-form" id="calc" onsubmit="return false">
+    <label>Round
+        <select name="round">
+            {% for r in rounds %}<option value="{{ r }}">{{ r }}</option>{% endfor %}
+        </select>
+    </label>
+    <label>Score (you&ndash;them)
+        <select name="score"></select>
+    </label>
+    <label>Your side
+        <select name="side">
+            <option value="atk">attacking</option>
+            <option value="def">defending</option>
+        </select>
+    </label>
+    <label><span id="last-label">Last round</span>
+        <select name="last"></select>
+    </label>
+    <label>Your credits
+        <input type="number" name="bank" min="0" max="45000" step="100" value="16000">
+    </label>
+    <label>Their credits
+        <input type="number" name="opp" min="0" max="45000" step="100" value="20000">
+    </label>
+</form>
+
+<div class="table-scroll">
+<table class="vct-table calc-table">
+    <thead>
+        <tr>
+            <th>Buy</th><th class="num">Win this round</th><th class="num">Win the map</th>
+            <th class="num">Map if you win it</th><th class="num">Map if you lose it</th>
+        </tr>
+    </thead>
+    <tbody id="calc-body"><tr><td colspan="5" class="muted">Loading&hellip;</td></tr></tbody>
+</table>
+</div>
+<p id="calc-verdict"></p>
+<p id="calc-warning" class="note"></p>
+
+<h3>How it works</h3>
+<ul class="steps note">
+    <li>From the round you pick, the rest of the map is played out {{ meta.maps_per_option }} times for each buy.
+        In later rounds both teams buy the way pro teams usually do with that money.</li>
+    <li>Who wins each round comes from a model of pro rounds since 2023 (both teams' guns, armor and spend,
+        the score and the round); money comes from real pro incomes and loss bonuses.</li>
+    <li><b>Bonus</b> is the round right after a pistol win: keep the pistol-round guns and add a little.
+        A <b>half buy</b> keeps enough to full buy next round even if you lose; a <b>force</b> doesn't.</li>
+    <li>It assumes the usual guns carried over from last round, and averages over the current map pool.
+        Money between the precomputed levels is interpolated.</li>
+    <li>Each figure is about &plusmn;2 points from simulation noise, so buys within 2 points of each other
+        are a coin flip.</li>
+</ul>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if meta %}
+{{ levels|json_script:"calc-levels" }}
+{{ options|json_script:"calc-options" }}
+<script>window.CALC_URL = "{% url 'vct:calculator_data' %}";</script>
+<script src="{% static 'vct/calculator.js' %}"></script>
+{% endif %}
+{% endblock %}

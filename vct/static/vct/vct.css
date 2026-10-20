@@ -240,3 +240,7 @@ a.sq:hover { border-color: var(--text); }
         margin: 10px 16px 0;
     }
 }
+
+/* Buy calculator */
+.calc-form input { width: 110px; }
+.vct-table tr.calc-best td { color: var(--accent); font-weight: bold; }

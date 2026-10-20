@@ -314,3 +314,25 @@ def player(player_id):
 
 def event_options():
     return _all("SELECT event_id, name, year FROM events ORDER BY first_match DESC")
+
+
+# Force-buy calculator (table calc, from vct-ratings' python/economy/precompute.py).
+CALC_OPTIONS = ["eco", "half", "force", "full", "bonus"]
+CALC_STATS = ["map", "round", "if_win", "if_lose"]
+
+
+def calc_meta():
+    """The calculator grid's settings, or None if this data file has no calculator grid."""
+    if not _one("SELECT 1 FROM sqlite_master WHERE name = 'calc'"):
+        return None
+    return {r["key"]: r["value"] for r in _all("SELECT key, value FROM calc_meta")}
+
+
+def calc_cells(round_num, score, side, last):
+    """Every precomputed money situation for one round, score, side and last result, as compact rows:
+    [bank, opp_bank, then map / round / if_win / if_lose in percent for each of CALC_OPTIONS (None if the
+    option isn't possible there)]."""
+    cols = [f"{o}_{s}" for o in CALC_OPTIONS for s in CALC_STATS]
+    rows = _all(f"SELECT bank, opp_bank, {', '.join(cols)} FROM calc "
+                "WHERE round_num = ? AND score = ? AND side = ? AND last = ?", (round_num, score, side, last))
+    return [[r["bank"], r["opp_bank"]] + [pct(r[c]) for c in cols] for r in rows]

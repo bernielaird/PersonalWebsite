@@ -1,8 +1,9 @@
 from itertools import groupby
 
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.views.decorators.cache import cache_control
 
 from . import data
 
@@ -145,3 +146,24 @@ def player(request, player_id):
     if not p:
         raise Http404("No such player")
     return _render(request, "player.html", {"p": p})
+
+
+def calculator(request):
+    """Force-buy calculator: the page; the odds come from calculator_data as you change the inputs."""
+    meta = data.calc_meta()
+    return _render(request, "calculator.html", {
+        "meta": meta,
+        "options": data.CALC_OPTIONS, "stats": data.CALC_STATS,
+        "levels": [int(x) for x in meta["bank_levels"].split(",")] if meta else [],
+        "rounds": [r for r in range(2, 25) if r != 13],
+    })
+
+
+@cache_control(public=True, max_age=86400)
+def calculator_data(request):
+    """The precomputed money grid for one round, score, side and last result (JSON)."""
+    round_num, score = _int(request.GET.get("round")), _int(request.GET.get("score"))
+    last, side = _int(request.GET.get("last")), request.GET.get("side")
+    if round_num is None or score is None or last is None or side not in ("atk", "def") or not data.calc_meta():
+        raise Http404("Bad calculator query")
+    return JsonResponse({"cells": data.calc_cells(round_num, score, side, last)})
