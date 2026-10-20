@@ -246,6 +246,33 @@ a.sq:hover { border-color: var(--text); }
 .vct-table tr.calc-best td { color: var(--accent); font-weight: bold; }
 
 /* Round page: link into the buy calculator */
-.calc-cta { margin: 16px 0; line-height: 1.7; }
-.calc-cta-title { color: var(--muted); }
-.calc-cta a { font-size: 18px; font-weight: bold; margin-right: 6px; }
+.calc-cta { margin: 18px 0; max-width: 440px; }
+.calc-cta-title { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.calc-team.team1 { --c: var(--team1); --cl: var(--team1-l, var(--team1)); --cd: var(--team1-d, var(--team1)); }
+.calc-team.team2 { --c: var(--team2); --cl: var(--team2-l, var(--team2)); --cd: var(--team2-d, var(--team2)); }
+.vct-content a.calc-team,
+.vct-content a.calc-team:visited {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--c);
+    background: color-mix(in srgb, var(--c) 6%, transparent);
+    color: var(--text);
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
+}
+.vct-content a.calc-team:hover {
+    background: color-mix(in srgb, var(--c) 14%, transparent);
+    border-color: var(--c);
+}
+.calc-tag { font-weight: bold; font-size: 17px; min-width: 48px; color: var(--cl); }
+.calc-what { font-size: 14px; color: var(--muted); }
+.calc-arrow { margin-left: auto; color: var(--muted); transition: transform 0.15s; }
+.calc-team:hover .calc-arrow { transform: translateX(3px); color: var(--text); }
+:root[data-theme="dark"] .calc-tag { color: var(--cd); }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .calc-tag { color: var(--cd); }
+}

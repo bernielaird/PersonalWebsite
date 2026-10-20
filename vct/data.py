@@ -148,6 +148,7 @@ def round_detail(game_id, round_num):
                   FROM rounds WHERE game_id = ? AND start_prob IS NOT NULL""", (round_num, round_num, game_id))
     r.update(nav)
     r["calc_links"] = calc_links(r, tags)
+    r["style"] = match_style(m)
 
     actions = _all("SELECT * FROM actions WHERE game_id = ? AND round_num = ? ORDER BY event_num",
                    (game_id, round_num))
@@ -331,7 +332,7 @@ def calc_meta():
 
 
 CARRY_EDGES = (1000, 6000)  # guns kept, as in precompute.py's CARRY_BINS: none / 1-2 guns / 3+ guns
-BUY_NAMES = {"eco": "a save", "half": "a half buy", "force": "a force", "full": "a full buy", "bonus": "a bonus buy"}
+BUY_NAMES = {"eco": "saved", "half": "half buy", "force": "forced", "full": "full buy", "bonus": "bonus buy"}
 
 
 def _carry_bin(credits):
@@ -361,7 +362,7 @@ def calc_links(r, tags):
                  "last": last, "carry": _carry_bin(me["carried_in"]), "opp_carry": _carry_bin(them["carried_in"]),
                  "bank": me["bank"], "opp": them["bank"], "actual": me["buy"]}
         links.append({"tag": tags[team], "query": urlencode(query), "bank": f"{me['bank']:,}",
-                      "bought": BUY_NAMES[me["buy"]]})
+                      "bought": BUY_NAMES[me["buy"]], "slot": 1 if team == r["match"]["team1_id"] else 2})
     return links
 
 

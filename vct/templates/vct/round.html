@@ -15,11 +15,14 @@
 </p>
 
 {% if r.calc_links %}
-<div class="calc-cta">
-    <div class="calc-cta-title">buy calculator:</div>
+<div class="calc-cta" style="{{ r.style }}">
+    <div class="calc-cta-title">buy calculator</div>
     {% for c in r.calc_links %}
-    <div><a class="project-link" href="{% url 'vct:calculator' %}?{{ c.query }}">{{ c.tag }}</a>
-        <span class="muted">{{ c.bought }} with {{ c.bank }} credits</span></div>
+    <a class="calc-team team{{ c.slot }}" href="{% url 'vct:calculator' %}?{{ c.query }}">
+        <span class="calc-tag">{{ c.tag }}</span>
+        <span class="calc-what">{{ c.bought }} &middot; {{ c.bank }} credits</span>
+        <span class="calc-arrow">&rarr;</span>
+    </a>
     {% endfor %}
 </div>
 {% endif %}
