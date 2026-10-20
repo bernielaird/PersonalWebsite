@@ -380,7 +380,7 @@ a.name:hover {
 
 /* Visual Transit Simulator page: the demo is 1200x660, scaled down to fit (see transit.html) */
 .transit-page {
-    width: min(1200px, 92%);
+    width: min(1200px, 92vw);
     margin: 30px auto 0;
 }
 .transit-page .small { font-size: 14px; margin-top: 16px; }
@@ -391,7 +391,9 @@ a.name:hover {
     margin: 18px 0;
 }
 .demo-frame iframe {
-    display: block;
+    position: absolute;  /* so its 1200px width never stretches the page */
+    top: 0;
+    left: 0;
     border: 0;
     transform-origin: 0 0;
 }
