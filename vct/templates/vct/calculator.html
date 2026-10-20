@@ -11,6 +11,14 @@
 {% if not meta %}
 <p>The calculator's data isn't in this build yet.</p>
 {% else %}
+<p class="note calc-examples">Try:
+    <a href="?round=2&amp;score=0&amp;side=atk&amp;last=-1&amp;carry=0&amp;opp_carry=1&amp;bank=10300&amp;opp=16500">round 2 after losing the pistol</a> &middot;
+    <a href="?round=14&amp;score=7&amp;side=atk&amp;last=-1&amp;carry=0&amp;opp_carry=1&amp;bank=10300&amp;opp=17350">round 14 at 7&ndash;6, pistol lost</a> &middot;
+    <a href="?round=24&amp;score=11&amp;side=def&amp;last=-1&amp;carry=0&amp;opp_carry=2&amp;bank=18000&amp;opp=23000">round 24, down 11&ndash;12</a> &middot;
+    a real one: <a href="?round=14&amp;score=6&amp;side=atk&amp;last=1&amp;carry=1&amp;opp_carry=0&amp;bank=17650&amp;opp=9700&amp;actual=bonus">KC in the EMEA Stage 2 grand final</a>
+    (<a href="{% url 'vct:round' 279415 14 %}">the round</a>)
+</p>
+
 <form class="filters calc-form" id="calc" onsubmit="return false">
     <label>Round
         <select name="round">

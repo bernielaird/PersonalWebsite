@@ -276,3 +276,5 @@ a.sq:hover { border-color: var(--text); }
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) .calc-tag { color: var(--cd); }
 }
+.calc-examples a { color: var(--accent); }
+.calc-examples a:hover { color: var(--accent-hover); }
