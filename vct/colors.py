@@ -49,10 +49,11 @@ def _distance(a, b):
 
 
 def _same_family(a, b):
-    """Two saturated colors of about the same hue (blue and navy, red and dark red): they read as one color."""
+    """Two saturated colors of nearly the same hue (blue and navy, red and dark red): they read as one color.
+    Orange vs gold (about 23 degrees apart) still reads as two."""
     (h1, s1, _), (h2, s2, _) = (colorsys.rgb_to_hsv(*(x / 255 for x in _rgb(c))) for c in (a, b))
     gap = abs(h1 - h2) * 360
-    return s1 > 0.25 and s2 > 0.25 and min(gap, 360 - gap) < 30
+    return s1 > 0.25 and s2 > 0.25 and min(gap, 360 - gap) < 15
 
 
 def _candidates(primary, secondary):
