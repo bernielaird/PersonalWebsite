@@ -328,11 +328,13 @@ def calc_meta():
     return {r["key"]: r["value"] for r in _all("SELECT key, value FROM calc_meta")}
 
 
-def calc_cells(round_num, score, side, last):
-    """Every precomputed money situation for one round, score, side and last result, as compact rows:
+def calc_cells(round_num, score, side, last, carry, opp_carry):
+    """Every precomputed money situation for one round, score, side, last result and guns kept (bins 0-2 for
+    each team), as compact rows:
     [bank, opp_bank, then map / round / if_win / if_lose in percent for each of CALC_OPTIONS (None if the
     option isn't possible there)]."""
     cols = [f"{o}_{s}" for o in CALC_OPTIONS for s in CALC_STATS]
     rows = _all(f"SELECT bank, opp_bank, {', '.join(cols)} FROM calc "
-                "WHERE round_num = ? AND score = ? AND side = ? AND last = ?", (round_num, score, side, last))
+                "WHERE round_num = ? AND score = ? AND side = ? AND last = ? AND carry = ? AND opp_carry = ?",
+                (round_num, score, side, last, carry, opp_carry))
     return [[r["bank"], r["opp_bank"]] + [pct(r[c]) for c in cols] for r in rows]

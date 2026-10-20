@@ -52,8 +52,9 @@
     }
 
     async function cells() {
-        const q = new URLSearchParams({ round: f("round").value, score: f("score").value,
-                                        side: f("side").value, last: f("last").value });
+        const q = new URLSearchParams({ round: f("round").value, score: f("score").value, side: f("side").value,
+                                        last: f("last").value, carry: f("carry").value,
+                                        opp_carry: f("opp_carry").value });
         const key = q.toString();
         if (!cache.has(key)) {
             cache.set(key, fetch(`${window.CALC_URL}?${key}`).then((r) => r.json()).then((d) => d.cells));
@@ -108,7 +109,8 @@
         history.replaceState(null, "", `?${params}`);
         const rows = await cells();
         if (!rows.length) {
-            body.innerHTML = '<tr><td colspan="5" class="muted">No pro games reached this spot.</td></tr>';
+            body.innerHTML = '<tr><td colspan="5" class="muted">No pro games reached this spot. ' +
+                'Try different guns kept.</td></tr>';
             verdict.textContent = warning.textContent = "";
             return;
         }
@@ -137,6 +139,15 @@
             : "";
     }
 
+    // Guns kept usually follow last round: the winners' survivors keep theirs, the losers rarely do
+    // (right after a pistol round, neither side has much).
+    function defaultCarry() {
+        const r = +f("round").value, last = +f("last").value;
+        const pistolNext = r === 2 || r === 14;
+        f("carry").value = last > 0 && !pistolNext ? "2" : "0";
+        f("opp_carry").value = last < 0 && !pistolNext ? "2" : "0";
+    }
+
     function load() {
         const q = new URLSearchParams(location.search);
         if (q.has("round") && [...f("round").options].some((o) => o.value === q.get("round"))) f("round").value = q.get("round");
@@ -147,14 +158,17 @@
         if (q.get("side") === "def") f("side").value = "def";
         fillLast();
         if (q.has("last") && [...f("last").options].some((o) => o.value === q.get("last"))) f("last").value = q.get("last");
+        defaultCarry();
+        for (const name of ["carry", "opp_carry"]) if (["0", "1", "2"].includes(q.get(name))) f(name).value = q.get(name);
         if (q.has("bank")) f("bank").value = q.get("bank");
         if (q.has("opp")) f("opp").value = q.get("opp");
         update();
     }
 
-    f("round").addEventListener("change", () => { fillScores(); fillLast(); update(); });
+    f("round").addEventListener("change", () => { fillScores(); fillLast(); defaultCarry(); update(); });
     f("score").addEventListener("change", () => { fillLast(); update(); });
-    for (const name of ["side", "last"]) f(name).addEventListener("change", update);
+    f("last").addEventListener("change", () => { defaultCarry(); update(); });
+    for (const name of ["side", "carry", "opp_carry"]) f(name).addEventListener("change", update);
     for (const name of ["bank", "opp"]) f(name).addEventListener("input", update);
     load();
 })();

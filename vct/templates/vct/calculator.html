@@ -29,6 +29,16 @@
     <label><span id="last-label">Last round</span>
         <select name="last"></select>
     </label>
+    <label>Guns you kept
+        <select name="carry">
+            <option value="0">none</option><option value="1">1&ndash;2 guns</option><option value="2">3+ guns</option>
+        </select>
+    </label>
+    <label>Guns they kept
+        <select name="opp_carry">
+            <option value="0">none</option><option value="1">1&ndash;2 guns</option><option value="2">3+ guns</option>
+        </select>
+    </label>
     <label>Your credits
         <input type="number" name="bank" min="0" max="45000" step="100" value="16000">
     </label>
@@ -59,8 +69,9 @@
         the score and the round); money comes from real pro incomes and loss bonuses.</li>
     <li><b>Bonus</b> is the round right after a pistol win: keep the pistol-round guns and add a little.
         A <b>half buy</b> keeps enough to full buy next round even if you lose; a <b>force</b> doesn't.</li>
-    <li>It assumes the usual guns carried over from last round, and averages over the current map pool.
-        Money between the precomputed levels is interpolated.</li>
+    <li>Guns kept are the guns your survivors carried out of last round: about 3,300 credits' worth for
+        &ldquo;1&ndash;2 guns&rdquo; and 9,800 for &ldquo;3+&rdquo;. They lower what a full buy costs.
+        Odds are averaged over the current map pool, and money between the precomputed levels is interpolated.</li>
     <li>Each figure is about &plusmn;2 points from simulation noise, so buys within 2 points of each other
         are a coin flip.</li>
 </ul>

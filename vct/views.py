@@ -161,9 +161,11 @@ def calculator(request):
 
 @cache_control(public=True, max_age=86400)
 def calculator_data(request):
-    """The precomputed money grid for one round, score, side and last result (JSON)."""
+    """The precomputed money grid for one round, score, side, last result and guns kept (JSON)."""
     round_num, score = _int(request.GET.get("round")), _int(request.GET.get("score"))
     last, side = _int(request.GET.get("last")), request.GET.get("side")
-    if round_num is None or score is None or last is None or side not in ("atk", "def") or not data.calc_meta():
+    carry, opp_carry = _int(request.GET.get("carry")), _int(request.GET.get("opp_carry"))
+    if (None in (round_num, score, last) or side not in ("atk", "def") or carry not in (0, 1, 2)
+            or opp_carry not in (0, 1, 2) or not data.calc_meta()):
         raise Http404("Bad calculator query")
-    return JsonResponse({"cells": data.calc_cells(round_num, score, side, last)})
+    return JsonResponse({"cells": data.calc_cells(round_num, score, side, last, carry, opp_carry)})
