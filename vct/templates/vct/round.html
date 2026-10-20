@@ -14,6 +14,13 @@
     {% if r.start_prob is not None %}At round start, the model gave {{ r.attacker_tag }} {{ r.start_prob|pct }}.{% endif %}
 </p>
 
+{% if r.calc_links %}
+<p class="note">Buy calculator:
+    {% for c in r.calc_links %}<a class="project-link" href="{% url 'vct:calculator' %}?{{ c.query }}">{{ c.tag }}'s buy</a>
+    ({{ c.bank }} credits, made {{ c.bought }}){% if not forloop.last %} &middot; {% endif %}{% endfor %}
+</p>
+{% endif %}
+
 <div class="round-nav">
     {% if r.prev %}<a class="project-link" href="{% url 'vct:round' r.game_id r.prev %}">&larr; round {{ r.prev }}</a>{% else %}<span></span>{% endif %}
     {% if r.next %}<a class="project-link" href="{% url 'vct:round' r.game_id r.next %}">round {{ r.next }} &rarr;</a>{% endif %}

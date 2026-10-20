@@ -4,6 +4,7 @@ Probabilities and credits are stored in basis points; everything returned here i
 """
 import sqlite3
 from contextlib import closing
+from urllib.parse import urlencode
 from pathlib import Path
 
 from .colors import match_style
@@ -146,6 +147,7 @@ def round_detail(game_id, round_num):
                          MIN(CASE WHEN round_num > ? THEN round_num END) AS next
                   FROM rounds WHERE game_id = ? AND start_prob IS NOT NULL""", (round_num, round_num, game_id))
     r.update(nav)
+    r["calc_links"] = calc_links(r, tags)
 
     actions = _all("SELECT * FROM actions WHERE game_id = ? AND round_num = ? ORDER BY event_num",
                    (game_id, round_num))
@@ -326,6 +328,41 @@ def calc_meta():
     if not _one("SELECT 1 FROM sqlite_master WHERE name = 'calc'"):
         return None
     return {r["key"]: r["value"] for r in _all("SELECT key, value FROM calc_meta")}
+
+
+CARRY_EDGES = (1000, 6000)  # guns kept, as in precompute.py's CARRY_BINS: none / 1-2 guns / 3+ guns
+BUY_NAMES = {"eco": "a save", "half": "a half buy", "force": "a force", "full": "a full buy", "bonus": "a bonus buy"}
+
+
+def _carry_bin(credits):
+    return sum(credits > edge for edge in CARRY_EDGES)
+
+
+def calc_links(r, tags):
+    """For a round the calculator covers: each team's spot as calculator query strings, with what it bought."""
+    round_num = r["round_num"]
+    if not 2 <= round_num <= 24 or round_num == 13 or not calc_meta():
+        return []
+    try:
+        econ = {e["team_id"]: e for e in _all("SELECT * FROM round_econ WHERE game_id = ? AND round_num = ?",
+                                              (r["game_id"], round_num))}
+    except sqlite3.OperationalError:  # a data file from before round_econ
+        return []
+    if len(econ) != 2 or any(e["buy"] not in BUY_NAMES for e in econ.values()):
+        return []
+    wins = {w["winner_id"]: w["n"] for w in _all(
+        "SELECT winner_id, COUNT(*) AS n FROM rounds WHERE game_id = ? AND round_num < ? GROUP BY winner_id",
+        (r["game_id"], round_num))}
+    links = []
+    for team, opp in ((r["attacker_id"], r["defender_id"]), (r["defender_id"], r["attacker_id"])):
+        me, them = econ[team], econ[opp]
+        last = min(them["loss_streak"], 3) if me["loss_streak"] == 0 else -min(me["loss_streak"], 3)
+        query = {"round": round_num, "score": wins.get(team, 0), "side": "atk" if team == r["attacker_id"] else "def",
+                 "last": last, "carry": _carry_bin(me["carried_in"]), "opp_carry": _carry_bin(them["carried_in"]),
+                 "bank": me["bank"], "opp": them["bank"], "actual": me["buy"]}
+        links.append({"tag": tags[team], "query": urlencode(query), "bank": f"{me['bank']:,}",
+                      "bought": BUY_NAMES[me["buy"]]})
+    return links
 
 
 def calc_cells(round_num, score, side, last, carry, opp_carry):

@@ -13,6 +13,9 @@
     const COL = { map: 0, round: 1, if_win: 2, if_lose: 3 };
     const TOO_CLOSE = 2;  // points: about the simulation noise
     const cache = new Map();
+    // Opened from a round page: what the team actually bought, marked while the inputs are unchanged.
+    const actual = new URLSearchParams(location.search).get("actual");
+    let actualKey = null;
     const f = (name) => form.elements[name];
 
     function opt(select, value, text) {
@@ -106,6 +109,9 @@
 
     async function update() {
         const params = new URLSearchParams(new FormData(form));
+        if (actualKey === null) actualKey = params.toString();
+        const showActual = actual && params.toString() === actualKey;
+        if (showActual) params.set("actual", actual);
         history.replaceState(null, "", `?${params}`);
         const rows = await cells();
         if (!rows.length) {
@@ -122,7 +128,8 @@
         for (const o of shown) {
             const tr = document.createElement("tr");
             if (o === ranked[0]) tr.className = "calc-best";
-            tr.innerHTML = `<td>${LABELS[o]}</td>` +
+            const mark = showActual && o === actual ? ' <span class="muted">(what they did)</span>' : "";
+            tr.innerHTML = `<td>${LABELS[o]}${mark}</td>` +
                 ORDER.map((s) => `<td class="num">${pct(values[o][COL[s]])}</td>`).join("");
             body.appendChild(tr);
         }
