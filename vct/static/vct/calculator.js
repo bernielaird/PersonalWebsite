@@ -142,6 +142,12 @@
         } else {
             verdict.innerHTML = ranked.length ? `Only one option here: <b>${LABELS[ranked[0]]}</b>.` : "";
         }
+        // Opened from a real round: what the team's actual buy cost against the best one.
+        if (showActual && values[actual] && actual !== ranked[0]) {
+            const cost = values[ranked[0]][COL.map] - values[actual][COL.map];
+            verdict.innerHTML += `<br>What they did (${LABELS[actual]}) gave up <b>${cost.toFixed(1)} points</b> of map win chance against ${LABELS[ranked[0]]}` +
+                (cost < TOO_CLOSE ? ", within the noise." : ".");
+        }
         warning.textContent = distance > 3000
             ? `No pro team had about this much money in this spot; showing the closest we have (you ${money(nearest[0])}, them ${money(nearest[1])}).`
             : "";
