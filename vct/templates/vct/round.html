@@ -97,6 +97,15 @@
         if (yMax - yMin < 30 && yMin > 0) yMin -= 10;
     }
     const yStep = yMax - yMin > 60 ? 25 : (yMax - yMin > 30 ? 10 : 5);
+    // Kills in the same second share one spot on the chart: hovering there lists every one of them, in order.
+    Chart.Interaction.modes.sameSecond = function (chart, e, options, useFinalPosition) {
+        const near = Chart.Interaction.modes.nearest(chart, e, { axis: "x", intersect: false }, useFinalPosition);
+        if (!near.length) return [];
+        const x = points[near[0].index].x;
+        return chart.getDatasetMeta(0).data
+            .map((element, index) => ({ element, datasetIndex: 0, index }))
+            .filter(item => points[item.index].x === x && points[item.index].label);
+    };
     const chart = new Chart(document.getElementById("wp-chart"), {
         type: "line",
         data: {
@@ -115,7 +124,7 @@
             maintainAspectRatio: false,
             parsing: false,
             animation: false,
-            interaction: { mode: "nearest", intersect: false, axis: "x" },
+            interaction: { mode: "sameSecond", intersect: false },
             plugins: {
                 legend: { display: false },
                 tooltip: {
