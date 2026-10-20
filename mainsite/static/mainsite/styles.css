@@ -377,3 +377,21 @@ a.name:hover {
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) .theme-toggle::after { content: "light"; }
 }
+
+/* Visual Transit Simulator page: the demo is 1200x660, scaled down to fit (see transit.html) */
+.transit-page {
+    width: min(1200px, 92%);
+    margin: 30px auto 0;
+}
+.transit-page .small { font-size: 14px; margin-top: 16px; }
+.demo-frame {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin: 18px 0;
+}
+.demo-frame iframe {
+    display: block;
+    border: 0;
+    transform-origin: 0 0;
+}

@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visual Transit Simulator demo</title>
+    <style>
+        body { margin: 0; background: #fff; font-family: sans-serif; }
+        .credit { position: fixed; right: 8px; bottom: 6px; font-size: 11px; color: #777; }
+        .credit a { color: inherit; }
+    </style>
+    {# The demo from github.com/bernielaird/VisualTransitSimulator (demo/web); bridge.js finds its files here. #}
+    <script>window.VTS_FILES = { config: "{% static 'transit/config.txt' %}", map: "{% static 'transit/map.png' %}" };</script>
+    <script src="{% static 'transit/p5.min.js' %}"></script>
+    <script src="{% static 'transit/vts.js' %}"></script>
+    <script src="{% static 'transit/bridge.js' %}"></script>
+    <script src="{% static 'transit/sketch.js' %}"></script>
+</head>
+<body>
+    <div class="credit">Map data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</div>
+</body>
+</html>

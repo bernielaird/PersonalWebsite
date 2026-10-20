@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script src="{% static 'mainsite/theme.js' %}" defer></script>
+    <link rel="preload" href="{% static 'fonts/tstar-mono-round.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="{% static 'mainsite/styles.css' %}">
+    <link rel="icon" href="{% static 'images/foxv1.png' %}" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Transit Simulator</title>
+</head>
+<body class="page-layout">
+    <button class="theme-toggle" type="button" aria-label="Switch between light and dark mode"></button>
+    <header>
+        <div class="title">
+            <h1>visual transit simulator</h1>
+        </div>
+    </header>
+
+    <main>
+        <div class="transit-page">
+            <p class="project-description">
+                Buses and trains running two lines around the University of Minnesota: passengers show up at
+                stops, vehicles pick them up and drop them off, and each vehicle reports its load and CO&#8322;.
+                Set how long to run and how often vehicles leave, then press <b>Start</b>. Click a vehicle to
+                follow it, or pick a line to report an issue on it.
+            </p>
+
+            <div class="demo-frame" id="demo-frame">
+                <iframe src="{% url 'transit_demo' %}" width="1200" height="660" title="Visual Transit Simulator"></iframe>
+            </div>
+
+            <p class="project-description small">
+                The simulation is the original Java code, compiled to JavaScript with TeaVM so it runs in your
+                browser; it used to need a Java server and a websocket. Built for CSCI 3081W at the University of
+                Minnesota (Fall 2024) with Kaden Lin and Kenny: the course staff provided the base simulator and
+                its GUI, and our team extended it (vehicle colors, refactoring, tests and documentation). I worked
+                on the visualization module.
+            </p>
+            <a class="project-link" href="https://github.com/bernielaird/VisualTransitSimulator" target="_blank">github</a>
+            &nbsp;
+            <a class="project-link" href="/projects">all projects</a>
+        </div>
+    </main>
+    <footer class="bottom-bar">
+        <div class="bottom-left">
+            <a href="/">home</a>
+            <a href="/about/">about</a>
+            <a href="/projects" class="active" aria-current="page">projects</a>
+            <a href="/vct/">vct</a>
+            <a href="/musicelo/">musicelo</a>
+            <a href="/contact/">contact</a>
+        </div>
+    </footer>
+    <script>
+        // The demo is drawn at 1200x660; scale it down to fit narrower screens.
+        (function () {
+            const box = document.getElementById("demo-frame");
+            const frame = box.querySelector("iframe");
+            function fit() {
+                const s = Math.min(1, box.clientWidth / 1200);
+                frame.style.transform = "scale(" + s + ")";
+                box.style.height = 660 * s + "px";
+            }
+            window.addEventListener("resize", fit);
+            fit();
+        })();
+    </script>
+</body>
+</html>
