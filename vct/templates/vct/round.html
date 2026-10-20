@@ -15,10 +15,12 @@
 </p>
 
 {% if r.calc_links %}
-<p class="note">Buy calculator:
-    {% for c in r.calc_links %}<a class="project-link" href="{% url 'vct:calculator' %}?{{ c.query }}">{{ c.tag }}'s buy</a>
-    ({{ c.bank }} credits, made {{ c.bought }}){% if not forloop.last %} &middot; {% endif %}{% endfor %}
-</p>
+<div class="calc-cta">
+    <div class="calc-cta-title"><b>Was it the right buy?</b> Open this round in the buy calculator:</div>
+    {% for c in r.calc_links %}
+    <a class="calc-button" href="{% url 'vct:calculator' %}?{{ c.query }}">{{ c.tag }}: {{ c.bought }} with {{ c.bank }} credits &rarr;</a>
+    {% endfor %}
+</div>
 {% endif %}
 
 <div class="round-nav">

@@ -244,3 +244,24 @@ a.sq:hover { border-color: var(--text); }
 /* Buy calculator */
 .calc-form input { width: 110px; }
 .vct-table tr.calc-best td { color: var(--accent); font-weight: bold; }
+
+/* Round page: link into the buy calculator */
+.calc-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin: 16px 0;
+    padding: 12px 14px;
+    border: 1px solid var(--accent);
+}
+.calc-cta-title { width: 100%; font-size: 15px; }
+.vct-content a.calc-button,
+.vct-content a.calc-button:visited {
+    padding: 7px 14px;
+    background: var(--button-bg);
+    color: var(--button-text);
+    text-decoration: none;
+    font-size: 14px;
+}
+.vct-content a.calc-button:hover { background: var(--accent); color: var(--button-text); }
