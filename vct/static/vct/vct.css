@@ -209,6 +209,8 @@ a.sq:hover { border-color: var(--text); }
     gap: 4px;
     font-size: 13px;
     color: var(--muted);
+    min-width: 0;      /* let long dropdowns (tournament names) shrink to the screen */
+    max-width: 100%;
 }
 
 .filters select,
@@ -276,5 +278,31 @@ a.sq:hover { border-color: var(--text); }
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) .calc-tag { color: var(--cd); }
 }
-.calc-examples a { color: var(--accent); }
-.calc-examples a:hover { color: var(--accent-hover); }
+/* Calculator: example spots */
+.calc-examples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-start;  /* cards keep their own height; the link sits under the second */
+    margin: 14px 0 18px;
+}
+.calc-example-wrap { flex: 1 1 260px; display: flex; flex-direction: column; }
+.calc-examples > .calc-example { flex: 1 1 260px; }
+.vct-content a.calc-example,
+.vct-content a.calc-example:visited {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    color: var(--text);
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
+}
+.vct-content a.calc-example:hover { background: var(--hover-bg); border-color: var(--accent); }
+.calc-example-kicker { font-size: 12px; color: var(--accent); }
+.calc-example-title { font-size: 16px; font-weight: bold; }
+.calc-example-sub { font-size: 13px; color: var(--muted); }
+.vct-content a.calc-example-link { align-self: flex-end; font-size: 13px; margin-top: 6px; color: var(--accent); }
+.vct-content a.calc-example-link:hover { color: var(--accent-hover); }

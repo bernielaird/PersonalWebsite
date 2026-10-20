@@ -11,11 +11,21 @@
 {% if not meta %}
 <p>The calculator's data isn't in this build yet.</p>
 {% else %}
-<p class="note calc-examples">Try:
-    <a href="?round=14&amp;score=4&amp;side=atk&amp;last=-1&amp;carry=0&amp;opp_carry=1&amp;bank=10300&amp;opp=17350">round 14, down 4&ndash;9 after losing the pistol</a> &middot;
-    a real one: <a href="?round=14&amp;score=6&amp;side=atk&amp;last=1&amp;carry=1&amp;opp_carry=0&amp;bank=17650&amp;opp=9700&amp;actual=bonus">KC in the EMEA Stage 2 grand final</a>
-    (<a href="{% url 'vct:round' 279415 14 %}">the round</a>)
-</p>
+<div class="calc-examples">
+    <a class="calc-example" href="?round=14&amp;score=4&amp;side=atk&amp;last=-1&amp;carry=0&amp;opp_carry=1&amp;bank=10300&amp;opp=17350">
+        <span class="calc-example-kicker">common spot</span>
+        <span class="calc-example-title">Round 14, down 4&ndash;9</span>
+        <span class="calc-example-sub">lost the pistol &middot; 10,300 vs 17,350 credits</span>
+    </a>
+    <div class="calc-example-wrap">
+        <a class="calc-example" href="?round=14&amp;score=6&amp;side=atk&amp;last=1&amp;carry=1&amp;opp_carry=0&amp;bank=17650&amp;opp=9700&amp;actual=bonus">
+            <span class="calc-example-kicker">real round</span>
+            <span class="calc-example-title">KC vs TL, round 14</span>
+            <span class="calc-example-sub">EMEA Stage 2 grand final &middot; Summit &middot; KC won the pistol</span>
+        </a>
+        <a class="calc-example-link" href="{% url 'vct:round' 279415 14 %}">watch the round &rarr;</a>
+    </div>
+</div>
 
 <form class="filters calc-form" id="calc" onsubmit="return false">
     <label>Round

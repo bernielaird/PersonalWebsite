@@ -351,6 +351,16 @@ a.name:hover {
         gap: 12px;            /* tighter spacing */
         flex-wrap: wrap;      /* prevents overflow */
     }
+
+    /* Page titles: the 25% indent leaves too little room for long words on a phone */
+    .title {
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+    .title h1 {
+        font-size: 26px;
+        overflow-wrap: anywhere;
+    }
 }
 /* Dark mode button, top right on every page. The label names the mode it switches to. */
 .theme-toggle {
