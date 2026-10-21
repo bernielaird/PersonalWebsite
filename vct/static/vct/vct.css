@@ -311,3 +311,6 @@ a.sq:hover { border-color: var(--text); }
 .vct-content h2 a.map-link { color: inherit; text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 4px; }
 .vct-content h2 a.map-link:hover { color: var(--accent); text-decoration-color: var(--accent); }
 .map-block { scroll-margin-top: 20px; }
+
+/* Round page: which team color is which on the chart */
+.chart-teams .legend { margin: 0 0 6px; }
